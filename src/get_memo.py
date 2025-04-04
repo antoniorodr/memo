@@ -8,11 +8,14 @@ def get_note():
         set output to ""
         repeat with eachFolder in folders
             set folderName to name of eachFolder
-                    repeat with eachNote in notes of eachFolder
+            -- Sjekk at mappen ikke er "Recently Deleted"
+            if folderName is not "Nylig slettet" and folderName is not "Recently deleted" then
+                repeat with eachNote in notes of eachFolder
                     set noteName to name of eachNote
                     set noteID to id of eachNote
                     set output to output & noteID & "|" & folderName & " - " & noteName & "\n"
                 end repeat
+            end if
         end repeat
         return output
     end tell
@@ -26,4 +29,10 @@ def get_note():
 
     if not notes_list:
         click.echo("No notes found.")
-    return note_map
+    seen_id = set()
+    notes_list = [
+        note_title
+        for _, (id, note_title) in note_map.items()
+        if id not in seen_id and not seen_id.add(id)
+    ]
+    return [note_map, notes_list]
