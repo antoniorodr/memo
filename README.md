@@ -59,7 +59,7 @@ CLI app to manage your Apple Notes and Apple reminders (not implemented yet).
 
 The following tools were used in this project:
 
-- [Click](https://click.palletsprojects.com/en/stable/) -[UV](https://docs.astral.sh/uv/)
+- [Click](https://click.palletsprojects.com/en/stable/)
 - [Mistune](https://mistune.lepture.com/en/latest/)
 - [html2text](https://pypi.org/project/html2text/)
 
