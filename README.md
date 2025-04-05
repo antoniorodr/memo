@@ -46,6 +46,8 @@
 
 CLI app to manage your Apple Notes and Apple reminders (not implemented yet).
 
+## :computer: Demo
+
 ## :sparkles: Features
 
 :heavy_check_mark: View your notes directly from the terminal\
