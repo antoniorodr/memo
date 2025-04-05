@@ -1,12 +1,12 @@
 import click
-from get_memo import get_note
-from edit_memo import edit_note
-from add_memo import add_note
-from delete_memo import delete_note
-from move_memo import move_note
-from choice_memo import pick_note
-from list_folder import notes_folders
-from validation_memo import selection_notes_validation
+from memo_helpers.get_memo import get_note
+from memo_helpers.edit_memo import edit_note
+from memo_helpers.add_memo import add_note
+from memo_helpers.delete_memo import delete_note
+from memo_helpers.move_memo import move_note
+from memo_helpers.choice_memo import pick_note
+from memo_helpers.list_folder import notes_folders
+from memo_helpers.validation_memo import selection_notes_validation
 
 # TODO: Implement fzf with --search flag
 # TODO: Check if reminders works better retrieving only the first event.

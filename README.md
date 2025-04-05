@@ -79,7 +79,8 @@ pip install .
 #### Homebrew Installation
 
 ```bash
-Brew
+brew tap antoniorodr/formulae
+brew install antoniorodr/formulae/memo
 ```
 
 ## :bookmark_tabs: Documentation
