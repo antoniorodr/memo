@@ -25,8 +25,6 @@
 
 </p>
 
-Status
-
  <h4 align="center">
  🚧  memo 🚀 Under development...  🚧
 </h4>
@@ -65,24 +63,52 @@ The following tools were used in this project:
 
 ## :checkered_flag: Installation
 
-### Manual Installation
+#### Manual Installation
 
 ```bash
 # Clone this project
-$ git clone https://github.com/antoniorodr/memo
+git clone https://github.com/antoniorodr/memo
 
 # Access
-$ cd memo
+cd memo
 
 # Install globally
-$ pip install .
+pip install .
 ```
 
-### Homebrew Installation
+#### Homebrew Installation
 
 ```bash
 Brew
 ```
+
+## :bookmark_tabs: Documentation
+
+Use the command "memo notes --help" to see all the options available.
+
+```bash
+memo notes --help
+Usage: memo notes [OPTIONS]
+
+Options:
+  -f, --folder TEXT  Specify a folder to filter the notes (leave empty to get
+                     all).
+  -a, --add          Add a note to the specified folder. Specify a folder
+                     using the --folder flag.
+  -e, --edit         Edit a note in the specified folder. Specify a folder
+                     using the --folder flag.
+  -d, --delete       Delete a note in the specified folder. Specify a folder
+                     using the --folder flag.
+  -m, --move         Move a note to a different folder.
+  -fl, --flist       List all the folders and subfolders.
+  --help             Show this message and exit.
+```
+
+## :pushpin: Roadmap
+
+- Add a search flag powered by fuzzy search
+- Possibility to remove a folder
+- Add support for Apple reminders
 
 ## :memo: License
 

@@ -11,9 +11,9 @@ def selection_notes_validation(folder, edit, delete, move, add, flist):
         "flist": flist,
     }
 
-    if add and sum(used_flags.values()) > 1:
+    if add and not folder:
         raise click.UsageError(
-            "--add must be used alone. It cannot be combined with other flags or --folder."
+            "--add must be used indicating a folder to create the note to."
         )
 
     if flist and sum(used_flags.values()) > 1:

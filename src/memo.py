@@ -22,13 +22,13 @@ def cli():
     "--folder",
     "-f",
     default="",
-    help="Notes folder (leave empty to get all).",
+    help="Specify a folder to filter the notes (leave empty to get all).",
 )
 @click.option(
     "--add",
     "-a",
     is_flag=True,
-    help="Add a note to the specified folder.",
+    help="Add a note to the specified folder. Specify a folder using the --folder flag.",
 )
 @click.option(
     "--edit",
