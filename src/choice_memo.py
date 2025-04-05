@@ -12,4 +12,4 @@ def pick_note(note_map, notes_list, action):
             return
         return note_data[0]
     else:
-        click.echo("Invalid selection.")
+        raise IndexError("The note you selected is not in the list.")

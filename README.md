@@ -52,18 +52,20 @@ CLI app to manage your Apple Notes and Apple reminders (not implemented yet).
 
 :heavy_check_mark: View your notes directly from the terminal\
 :heavy_check_mark: Edit your notes right from the terminal\
-:heavy_check_mark: Add new notes effortlessly through the terminal
+:heavy_check_mark: Add new notes effortlessly through the terminal\
+:heavy_check_mark: Move notes to another folder effortlessly through the terminal
 
 ## :rocket: Technologies
 
 The following tools were used in this project:
 
-- [Click](https://click.palletsprojects.com/en/stable/)
-- [UV](https://docs.astral.sh/uv/)
+- [Click](https://click.palletsprojects.com/en/stable/) -[UV](https://docs.astral.sh/uv/)
 - [Mistune](https://mistune.lepture.com/en/latest/)
 - [html2text](https://pypi.org/project/html2text/)
 
-## :checkered_flag: Starting
+## :checkered_flag: Installation
+
+### Manual Installation
 
 ```bash
 # Clone this project
@@ -72,12 +74,14 @@ $ git clone https://github.com/antoniorodr/memo
 # Access
 $ cd memo
 
-# Install dependencies
-$ yarn
+# Install globally
+$ pip install .
+```
 
-# Run the project
-$ yarn start
+### Homebrew Installation
 
+```bash
+Brew
 ```
 
 ## :memo: License
