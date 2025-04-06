@@ -91,6 +91,8 @@ brew install antoniorodr/memo/memo
 
 ## :bookmark_tabs: Documentation
 
+:warning: Be careful when using --edit and --move flags with notes that include images/attachments. Memo does not support this yet. Memo will send you a warning if you try to edit a note with images/attachments.
+
 Use the command `memo notes --help` to see all the options available.
 
 ```bash
