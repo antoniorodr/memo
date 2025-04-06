@@ -13,6 +13,7 @@ from memo_helpers.validation_memo import selection_notes_validation
 
 
 @click.group(invoke_without_command=False)
+@click.version_option()
 def cli():
     pass
 

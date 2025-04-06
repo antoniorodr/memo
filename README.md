@@ -33,9 +33,12 @@
 
 <p align="center">
   <a href="#dart-about">About</a> &#xa0; | &#xa0;
+  <a href="#computer-demo">Demo</a> &#xa0; | &#xa0;
   <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
   <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
-  <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
+  <a href="#checkered_flag-installation">Installation</a> &#xa0; | &#xa0;
+  <a href="#bookmark_tabs-documentation">Documentation</a> &#xa0; | &#xa0;
+  <a href="#pushpin-roadmap">Roadmap</a> &#xa0; | &#xa0;
   <a href="#memo-license">License</a> &#xa0; | &#xa0;
   <a href="https://github.com/antoniorodr" target="_blank">Author</a>
 </p>
@@ -47,6 +50,10 @@
 CLI app to manage your Apple Notes and Apple reminders (not implemented yet).
 
 ## :computer: Demo
+
+<a href="https://asciinema.org/a/pNryTkFEJPmojjl5iueitd75S" target="_blank">
+  <img src="https://asciinema.org/a/pNryTkFEJPmojjl5iueitd75S.svg" alt="asciicast">
+</a>
 
 ## :sparkles: Features
 
@@ -68,26 +75,23 @@ The following tools were used in this project:
 #### Manual Installation
 
 ```bash
-# Clone this project
 git clone https://github.com/antoniorodr/memo
 
-# Access
 cd memo
 
-# Install globally
 pip install .
 ```
 
 #### Homebrew Installation
 
 ```bash
-brew tap antoniorodr/formulae
-brew install antoniorodr/formulae/memo
+brew tap antoniorodr/memo
+brew install antoniorodr/memo/memo
 ```
 
 ## :bookmark_tabs: Documentation
 
-Use the command "memo notes --help" to see all the options available.
+Use the command `memo notes --help` to see all the options available.
 
 ```bash
 memo notes --help
@@ -107,11 +111,26 @@ Options:
   --help             Show this message and exit.
 ```
 
+Memo uses `$EDITOR` to edit and add notes. You can set it up by running the following command:
+
+```bash
+export EDITOR="vim"
+```
+
+Where `vim` can be replaced with your preferred editor.
+
+Or check the one you have set up in your terminal by running:
+
+```bash
+echo $EDITOR
+```
+
 ## :pushpin: Roadmap
 
 - Add a search flag powered by fuzzy search
 - Possibility to remove a folder
 - Add support for Apple reminders
+- Write tests
 
 ## :memo: License
 
