@@ -15,8 +15,6 @@
 
   <img alt="Repository size" src="https://img.shields.io/github/repo-size/antoniorodr/memo?color=56BEB8">
 
-  <img alt="License" src="https://img.shields.io/github/license/antoniorodr/memo?color=56BEB8">
-
   <img alt="Github issues" src="https://img.shields.io/github/issues/antoniorodr/memo?color=56BEB8" />
 
   <img alt="Github forks" src="https://img.shields.io/github/forks/antoniorodr/memo?color=56BEB8" />
@@ -39,15 +37,14 @@
   <a href="#checkered_flag-installation">Installation</a> &#xa0; | &#xa0;
   <a href="#bookmark_tabs-documentation">Documentation</a> &#xa0; | &#xa0;
   <a href="#pushpin-roadmap">Roadmap</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a> &#xa0; | &#xa0;
-  <a href="https://github.com/antoniorodr" target="_blank">Author</a>
+  <a href="#memo-license">License</a>
 </p>
 
 <br>
 
 ## :dart: About
 
-CLI app to manage your Apple Notes and Apple reminders (not implemented yet).
+**Memo** is a simple command-line interface (CLI) tool for managing your Apple Notes (and eventually Apple Reminders). It’s written in Python and aims to offer a fast, keyboard-driven way to create, search, and organize notes and reminders straight from your terminal.
 
 ## :computer: Demo
 
