@@ -63,9 +63,13 @@ def notes(folder, edit, add, delete, move, flist):
     notes_list_filter = [
         note for note in enumerate(notes_list, start=1) if folder in note[1]
     ]
+    folders = notes_folders()
 
     if not flist:
-        if not notes_list_filter:
+        if folder not in folders:
+            click.echo("\nThe folder does not exists.")
+            click.echo("\nUse 'memo notes -fl' to see your folders")
+        elif not notes_list_filter:
             click.echo("\nNo notes found.")
         else:
             title = f"Notes in folder {folder}:" if folder else "All notes:"
@@ -88,15 +92,8 @@ def notes(folder, edit, add, delete, move, flist):
         )
         move_note(note_id, target_folder)
     if delete:
-        choice = click.prompt(
-            "\nEnter the number of the note you want to delete", type=int
-        )
-        if 1 <= choice <= len(notes_list):
-            note_data = note_map.get(choice)
-            if note_data is None:
-                click.echo("Invalid selection.")
-                return
-            note_id = note_data[0]
-            delete_note(note_id)
+        note_id = pick_note(note_map, notes_list_filter, "delete")
+        delete_note(note_id)
     if flist:
-        notes_folders()
+        click.echo("\nFolders and subfolders in Notes:")
+        click.echo(f"\n{folders}")

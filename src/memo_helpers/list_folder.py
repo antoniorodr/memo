@@ -37,7 +37,6 @@ def notes_folders():
         result = subprocess.run(
             ["osascript", "-e", script], capture_output=True, text=True, check=True
         )
-        click.echo("\nFolders and subfolders in Notes:")
-        click.echo(f"\n{result.stdout.strip()}")
+        return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         click.echo(f"Error running AppleScript: {e}")

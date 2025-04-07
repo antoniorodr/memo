@@ -26,11 +26,11 @@ def edit_note(note_id):
 
     if "<img" in original_html or "<enclosure" in original_html:
         click.secho(
-            "⚠️  Warning: This note contains images or attachments that could be lost!",
+            "\n⚠️  Warning: This note contains images or attachments that could be lost!",
             fg="yellow",
         )
-    if not click.confirm("Do you still want to continue editing the note?"):
-        return
+        if not click.confirm("\nDo you still want to continue editing the note?"):
+            return
 
     editor = os.getenv("EDITOR", "vim")
     subprocess.run([editor, temp_file_path])
