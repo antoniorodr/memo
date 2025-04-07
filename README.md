@@ -129,7 +129,6 @@ echo $EDITOR
 - Add a search flag powered by fuzzy search
 - Possibility to remove a folder
 - Add support for Apple reminders
-- Write tests
 
 ## :memo: License
 
