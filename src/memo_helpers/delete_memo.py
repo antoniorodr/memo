@@ -1,16 +1,9 @@
-import subprocess
 import click
+from memo_helpers.id_search_memo import id_search_memo
 
 
 def delete_note(note_id):
-    script = f"""
-        tell application "Notes"
-            set selectedNote to first note whose id is "{note_id}"
-            delete selectedNote
-        end tell
-    """
-
-    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
+    result = id_search_memo(note_id)
 
     if result.returncode == 0:
         click.echo("\nNote deleted successfully.")

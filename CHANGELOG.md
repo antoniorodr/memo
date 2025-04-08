@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 08.04.2025
+
+### Added
+
+- Added the `--search` flag to enable fuzzy searching of your notes.
+
+### Changed
+
+- Refactored codebase and applied minor output improvements.
+
 ## [0.1.1] - 07.04.2025
 
 ### Added
@@ -12,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Refactored codebase and applied minor output improvements
+- Refactored codebase and applied minor output improvements.
 
 ## [0.1.0] - 06.04.2025
 
@@ -29,5 +39,6 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.1.2]: https://github.com/antoniorodr/memo/releases/tag/v0.1.2
 [0.1.1]: https://github.com/antoniorodr/memo/releases/tag/v0.1.1
 [0.1.0]: https://github.com/antoniorodr/memo/releases/tag/v0.1.0

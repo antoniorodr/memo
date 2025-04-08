@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "memo"
 authors = [{ name = "Antonio Rodriguez", email = "antonioinorge@hotmail.com" }]
-version = "0.1.1"
+version = "0.1.2"
 description = "CLI app to manage your Apple Notes and Apple reminders"
 readme = "README.md"
 license = "MIT"

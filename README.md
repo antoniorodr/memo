@@ -107,7 +107,22 @@ Options:
                      using the --folder flag.
   -m, --move         Move a note to a different folder.
   -fl, --flist       List all the folders and subfolders.
+  -s, --search       Fuzzy search your notes.
   --help             Show this message and exit.
+```
+
+You can use `memo --help`to see the available commands.
+
+```bash
+memo --help
+Usage: memo [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  notes
 ```
 
 Memo uses `$EDITOR` to edit and add notes. You can set it up by running the following command:
@@ -116,7 +131,7 @@ Memo uses `$EDITOR` to edit and add notes. You can set it up by running the foll
 export EDITOR="vim"
 ```
 
-Where `vim` can be replaced with your preferred editor.
+Where `vim` can be replaced with your preferred editor. Add it to your .zshrc/.bashrc to make it permanent.
 
 Or check the one you have set up in your terminal by running:
 
@@ -126,7 +141,6 @@ echo $EDITOR
 
 ## :pushpin: Roadmap
 
-- Add a search flag powered by fuzzy search
 - Possibility to remove a folder
 - Add support for Apple reminders
 
