@@ -7,8 +7,8 @@ from memo_helpers.move_memo import move_note
 from memo_helpers.choice_memo import pick_note
 from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
+from memo_helpers.search_memo import fuzzy_notes
 
-# TODO: Implement fzf with --search flag
 # TODO: Check if reminders works better retrieving only the first event.
 
 
@@ -55,7 +55,8 @@ def cli():
     is_flag=True,
     help="List all the folders and subfolders.",
 )
-def notes(folder, edit, add, delete, move, flist):
+@click.option("--search", "-s", is_flag=True, help="Fuzzy search your notes.")
+def notes(folder, edit, add, delete, move, flist, search):
     selection_notes_validation(folder, edit, delete, move, add, flist)
     notes_info = get_note()
     note_map = notes_info[0]
@@ -65,7 +66,7 @@ def notes(folder, edit, add, delete, move, flist):
     ]
     folders = notes_folders()
 
-    if not flist:
+    if not flist and not search:
         if folder not in folders:
             click.echo("\nThe folder does not exists.")
             click.echo("\nUse 'memo notes -fl' to see your folders")
@@ -97,3 +98,6 @@ def notes(folder, edit, add, delete, move, flist):
     if flist:
         click.echo("\nFolders and subfolders in Notes:")
         click.echo(f"\n{folders}")
+    if search:
+        click.echo("\nLoading notes...")
+        fuzzy_notes()

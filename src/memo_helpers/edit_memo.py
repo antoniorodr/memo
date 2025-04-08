@@ -1,24 +1,15 @@
 import subprocess
 import click
 import tempfile
-import html2text
 import mistune
 import os
+from memo_helpers.id_search_memo import id_search_memo
+from memo_helpers.md_converter import md_converter
 
 
 def edit_note(note_id):
-    script = f"""
-        tell application "Notes"
-            set selectedNote to first note whose id is "{note_id}"
-            return body of selectedNote
-        end tell
-        """
-    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
-    original_html = result.stdout.strip()
-
-    text_maker = html2text.HTML2Text()
-    text_maker.body_width = 0
-    original_md = text_maker.handle(original_html).strip()
+    result = id_search_memo(note_id)
+    original_md, original_html = md_converter(result)
 
     with tempfile.NamedTemporaryFile(suffix=".md", delete=False) as temp_file:
         temp_file.write(original_md.encode("utf-8"))

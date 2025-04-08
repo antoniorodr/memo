@@ -1,19 +1,12 @@
 import subprocess
 import click
 import html2text
+from memo_helpers.id_search_memo import id_search_memo
 
 
 def move_note(note_id: str, target_folder: str):
-    script_body = f"""
-        tell application "Notes"
-            set selectedNote to first note whose id is "{note_id}"
-            return body of selectedNote
-        end tell
-        """
-    result_body = subprocess.run(
-        ["osascript", "-e", script_body], capture_output=True, text=True
-    )
-    original_html = result_body.stdout.strip()
+    result = id_search_memo(note_id)
+    original_html = result.stdout.strip()
 
     text_maker = html2text.HTML2Text()
     text_maker.body_width = 0
