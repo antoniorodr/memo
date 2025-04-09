@@ -1,9 +1,9 @@
 import subprocess
 import tempfile
 import os
-import html2text
 from memo_helpers.get_memo import get_note
 from memo_helpers.id_search_memo import id_search_memo
+from memo_helpers.md_converter import md_converter
 
 
 def fuzzy_notes():
@@ -14,11 +14,7 @@ def fuzzy_notes():
         for note_title in unique_notes:
             note_id = title_to_id[note_title]
             result = id_search_memo(note_id)
-            original_html = result.stdout.strip()
-
-            text_maker = html2text.HTML2Text()
-            text_maker.body_width = 0
-            original_md = text_maker.handle(original_html).strip()
+            original_md = md_converter(result)[0]
 
             file_path = os.path.join(tmpdirname, f"{note_title}.md")
 

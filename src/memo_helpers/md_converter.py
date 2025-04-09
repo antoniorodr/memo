@@ -1,8 +1,8 @@
 import html2text
 
 
-def md_converter(result):
-    original_html = result.stdout.strip()
+def md_converter(id_search_result):
+    original_html = id_search_result.stdout.strip()
 
     text_maker = html2text.HTML2Text()
     text_maker.body_width = 0

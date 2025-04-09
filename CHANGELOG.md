@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 09.04.2025
+
+### Added
+
+- Added functionality to `--delete` for Apple Notes.
+- Added support to Apple Reminders. Now you can create, delete and mark reminders as completed.
+- Basic test coverage for Apple Reminders.
+
+### Changed
+
+- Improved the output of some of the flags, with colors and better formatting.
+- Small changes and updates to the README file.
+- Refactored codebase and applied minor output improvements.
+
 ## [0.1.2] - 08.04.2025
 
 ### Added
@@ -39,6 +53,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.2.0]: https://github.com/antoniorodr/memo/releases/tag/v0.2.0
 [0.1.2]: https://github.com/antoniorodr/memo/releases/tag/v0.1.2
 [0.1.1]: https://github.com/antoniorodr/memo/releases/tag/v0.1.1
 [0.1.0]: https://github.com/antoniorodr/memo/releases/tag/v0.1.0

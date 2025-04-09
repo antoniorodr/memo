@@ -44,7 +44,7 @@
 
 ## :dart: About
 
-**Memo** is a simple command-line interface (CLI) tool for managing your Apple Notes (and eventually Apple Reminders). It’s written in Python and aims to offer a fast, keyboard-driven way to create, search, and organize notes and reminders straight from your terminal.
+**Memo** is a simple command-line interface (CLI) tool for managing your Apple Notes and Apple Reminders. It’s written in Python and aims to offer a fast, keyboard-driven way to create, search, and organize notes and reminders straight from your terminal.
 
 ## :computer: Demo
 
@@ -54,10 +54,11 @@
 
 ## :sparkles: Features
 
-:heavy_check_mark: View your notes directly from the terminal\
+:heavy_check_mark: View your notes and reminders directly from the terminal\
 :heavy_check_mark: Edit your notes right from the terminal\
-:heavy_check_mark: Add new notes effortlessly through the terminal\
-:heavy_check_mark: Move notes to another folder effortlessly through the terminal
+:heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
+:heavy_check_mark: Move notes to another folder effortlessly through the terminal\
+:heavy_check_mark: Mark reminders as completed from the terminal
 
 ## :rocket: Technologies
 
@@ -90,7 +91,7 @@ brew install antoniorodr/memo/memo
 
 :warning: Be careful when using --edit and --move flags with notes that include images/attachments. Memo does not support this yet. Memo will send you a warning if you try to edit a note with images/attachments.
 
-Use the command `memo notes --help` to see all the options available.
+Use the command `memo notes --help` to see all the options available for notes.
 
 ```bash
 memo notes --help
@@ -111,7 +112,20 @@ Options:
   --help             Show this message and exit.
 ```
 
-You can use `memo --help`to see the available commands.
+Use the command `memo rem --help` to see all the options available for reminders.
+
+```bash
+memo rem --help
+Usage: memo rem [OPTIONS]
+
+Options:
+  -c, --complete  Mark a reminder as completed.
+  -a, --add       Add a new reminder.
+  -d, --delete    Delete a reminder.
+  --help          Show this message and exit.
+```
+
+You can use `memo --help` to see the available commands.
 
 ```bash
 memo --help
@@ -123,6 +137,7 @@ Options:
 
 Commands:
   notes
+  rem
 ```
 
 Memo uses `$EDITOR` to edit and add notes. You can set it up by running the following command:
@@ -142,7 +157,6 @@ echo $EDITOR
 ## :pushpin: Roadmap
 
 - Possibility to remove a folder
-- Add support for Apple reminders
 
 ## :memo: License
 
