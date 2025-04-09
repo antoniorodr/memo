@@ -6,7 +6,7 @@ def test_notes():
     runner = CliRunner()
     result = runner.invoke(cli, ["notes"])
     assert result.exit_code == 0
-    assert "All notes:" in result.output
+    assert "All your notes:" in result.output
 
 
 def test_notes_folder_without_folder_name():
