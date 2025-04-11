@@ -18,6 +18,21 @@ def delete_note(note_id):
         click.secho(f"Error: {result.stderr}", fg="red")
 
 
+def delete_note_folder(folder_name):
+    script = f'''
+    tell application "Notes"
+        set selectedFolder to first folder whose name is "{folder_name}"
+        delete selectedFolder
+    end tell
+    '''
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
+
+    if result.returncode == 0:
+        click.secho("\nFolder deleted successfully.", fg="green")
+    else:
+        click.secho(f"Error: {result.stderr}", fg="red")
+
+
 def complete_reminder(reminder_id):
     script = f'''
         tell application "Reminders"

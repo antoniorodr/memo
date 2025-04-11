@@ -109,6 +109,7 @@ Options:
   -m, --move         Move a note to a different folder.
   -fl, --flist       List all the folders and subfolders.
   -s, --search       Fuzzy search your notes.
+  -r, --remove       Remove the folder you specified.
   --help             Show this message and exit.
 ```
 
@@ -156,7 +157,7 @@ echo $EDITOR
 
 ## :pushpin: Roadmap
 
-- Possibility to remove a folder
+- Enhance the implementation of Apple Reminders.
 
 ## :memo: License
 

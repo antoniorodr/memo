@@ -3,14 +3,18 @@ import datetime
 from memo_helpers.get_memo import get_note, get_reminder
 from memo_helpers.edit_memo import edit_note
 from memo_helpers.add_memo import add_note, add_reminder
-from memo_helpers.delete_memo import delete_note, complete_reminder, delete_reminder
+from memo_helpers.delete_memo import (
+    delete_note,
+    complete_reminder,
+    delete_reminder,
+    delete_note_folder,
+)
 from memo_helpers.move_memo import move_note
 from memo_helpers.choice_memo import pick_note, pick_reminder
 from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
 from memo_helpers.search_memo import fuzzy_notes
 
-# TODO: Check how to remove folders.
 # TODO: Add funcionality to reminders: Edit reminders (title, due date, etc)
 
 
@@ -58,8 +62,14 @@ def cli():
     help="List all the folders and subfolders.",
 )
 @click.option("--search", "-s", is_flag=True, help="Fuzzy search your notes.")
-def notes(folder, edit, add, delete, move, flist, search):
-    selection_notes_validation(folder, edit, delete, move, add, flist)
+@click.option(
+    "--remove",
+    "-r",
+    is_flag=True,
+    help="Remove the folder you specified.",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove):
+    selection_notes_validation(folder, edit, delete, move, add, flist, search, remove)
     notes_info = get_note()
     note_map = notes_info[0]
     notes_list = notes_info[1]
@@ -68,7 +78,7 @@ def notes(folder, edit, add, delete, move, flist, search):
     ]
     folders = notes_folders()
 
-    if not flist and not search:
+    if not flist and not search and not remove:
         click.secho("\nFetching notes...", fg="yellow")
         if folder not in folders:
             click.echo("\nThe folder does not exists.")
@@ -104,6 +114,17 @@ def notes(folder, edit, add, delete, move, flist, search):
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
         fuzzy_notes()
+    if remove:
+        click.echo(f"\n{folders}")
+        click.secho(
+            "\n⚠️ Make sure the folder is empty, because the notes it includes will be deleted too.",
+            fg="red",
+        )
+        folder_to_delete = click.prompt(
+            "\nEnter the name of the folder to delete",
+            type=str,
+        )
+        delete_note_folder(folder_to_delete)
 
 
 @cli.command()

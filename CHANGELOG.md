@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 11.04.2025
+
+### Added
+
+- Added support for delete Apple Notes folders with the `--remove` flag.
+
+### Changed
+
+- Small changes and updates to the README file.
+
 ## [0.2.0] - 09.04.2025
 
 ### Added
@@ -53,6 +63,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.2.1]: https://github.com/antoniorodr/memo/releases/tag/v0.2.1
 [0.2.0]: https://github.com/antoniorodr/memo/releases/tag/v0.2.0
 [0.1.2]: https://github.com/antoniorodr/memo/releases/tag/v0.1.2
 [0.1.1]: https://github.com/antoniorodr/memo/releases/tag/v0.1.1
