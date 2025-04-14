@@ -76,7 +76,7 @@ def get_reminder():
             except ValueError:
                 due_datetime = None
         else:
-            due_datetime = None
+            due_datetime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 
         reminders_map[i + 1] = (reminder_id, title, due_datetime)
 

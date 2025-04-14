@@ -1,7 +1,7 @@
 import click
 import datetime
 from memo_helpers.get_memo import get_note, get_reminder
-from memo_helpers.edit_memo import edit_note
+from memo_helpers.edit_memo import edit_note, edit_reminder
 from memo_helpers.add_memo import add_note, add_reminder
 from memo_helpers.delete_memo import (
     delete_note,
@@ -15,7 +15,8 @@ from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
 from memo_helpers.search_memo import fuzzy_notes
 
-# TODO: Add funcionality to reminders: Edit reminders (title, due date, etc)
+# TODO: Check if notes can be imported and exported.
+# TODO: Check if its possible to fetch .localized names from the folders.
 
 
 @click.group(invoke_without_command=False)
@@ -146,7 +147,13 @@ def notes(folder, edit, add, delete, move, flist, search, remove):
     is_flag=True,
     help="Delete a reminder.",
 )
-def rem(complete, add, delete):
+@click.option(
+    "--edit",
+    "-e",
+    is_flag=True,
+    help="Edit a reminder.",
+)
+def rem(complete, add, delete, edit):
     if add:
         add_reminder()
     else:
@@ -191,3 +198,11 @@ def rem(complete, add, delete):
         if delete:
             reminder_id = pick_reminder(reminders_map, reminders_list_filter, "delete")
             delete_reminder(reminder_id)
+        if edit:
+            reminder_id = pick_reminder(reminders_map, reminders_list_filter, "edit")
+            part_to_edit = (
+                click.prompt("\nEnter the part to edit ('title' or 'due date')")
+                .strip()
+                .lower()
+            )
+            edit_reminder(reminder_id, part_to_edit)

@@ -55,7 +55,7 @@
 ## :sparkles: Features
 
 :heavy_check_mark: View your notes and reminders directly from the terminal\
-:heavy_check_mark: Edit your notes right from the terminal\
+:heavy_check_mark: Edit your notes and reminders right from the terminal\
 :heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
 :heavy_check_mark: Move notes to another folder effortlessly through the terminal\
 :heavy_check_mark: Mark reminders as completed from the terminal
