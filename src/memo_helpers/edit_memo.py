@@ -42,8 +42,14 @@ def edit_note(note_id):
             set body of selectedNote to "{edited_html}"
         end tell
         """
-    subprocess.run(["osascript", "-e", update_script])
-    click.secho("\nNote updated.", fg="green")
+    process = subprocess.run(
+        ["osascript", "-e", update_script], capture_output=True, text=True
+    )
+    if process.returncode != 0:
+        click.secho("\nError: Could not update note.\n", fg="red")
+        click.secho(process.stderr, fg="red")
+    else:
+        click.secho("\nNote updated.", fg="green")
 
 
 def edit_reminder(reminder_id, part_to_edit):

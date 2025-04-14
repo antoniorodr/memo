@@ -157,7 +157,7 @@ echo $EDITOR
 
 ## :pushpin: Roadmap
 
-- Enhance the implementation of Apple Reminders.
+- Check the roadmap [here](https://github.com/users/antoniorodr/projects/2)
 
 ## :memo: License
 

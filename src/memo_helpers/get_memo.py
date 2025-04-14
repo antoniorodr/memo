@@ -5,11 +5,13 @@ import datetime
 
 def get_note():
     script = """
+    set deletedTranslations to {"Recently Deleted", "Nylig slettet", "Senast raderade", "Senest slettet", "Zuletzt gelöscht", "Supprimés récemment", "Eliminados recientemente", "Eliminati di recente", "Recent verwijderd", "Ostatnio usunięte", "Недавно удалённые", "Apagados recentemente", "Apagadas recentemente", "最近删除", "最近刪除", "最近削除した項目", "최근 삭제된 항목", "Son Silinenler", "Äskettäin poistetut", "Nedávno smazané", "Πρόσφατα διαγραμμένα", "Nemrég töröltek", "Șterse recent", "Nedávno vymazané", "เพิ่งลบ", "Đã xóa gần đây", "Нещодавно видалені"}
+
     tell application "Notes"
         set output to ""
         repeat with eachFolder in folders
             set folderName to name of eachFolder
-            if folderName is not "Nylig slettet" and folderName is not "Recently Deleted" then
+            if folderName is not in deletedTranslations then
                 repeat with eachNote in notes of eachFolder
                     set noteName to name of eachNote
                     set noteID to id of eachNote
