@@ -17,6 +17,7 @@ from memo_helpers.search_memo import fuzzy_notes
 
 # TODO: Check if notes can be imported and exported.
 # TODO: Check if its possible to fetch .localized names from the folders.
+# TODO: Check alternative to md_converter to support images and attachments.
 
 
 @click.group(invoke_without_command=False)

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 15.04.2025
+
+### Changed
+
+- Added translations for the folder "Recently Deleted" to be able to filter it on all the languages MacOS supports.
+- Small changes and updates to the README file.
+
+### Fixed
+
+- Fixed a bug caused by images on Notes when using the `-edit`flag. The images will not appear in the markdown preview (Temporary fix).
+
 ## [0.2.2] - 14.04.2025
 
 ### Added
@@ -74,6 +85,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.2.3]: https://github.com/antoniorodr/memo/releases/tag/v0.2.3
 [0.2.2]: https://github.com/antoniorodr/memo/releases/tag/v0.2.2
 [0.2.1]: https://github.com/antoniorodr/memo/releases/tag/v0.2.1
 [0.2.0]: https://github.com/antoniorodr/memo/releases/tag/v0.2.0
