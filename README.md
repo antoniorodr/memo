@@ -67,6 +67,7 @@ The following tools were used in this project:
 - [Click](https://click.palletsprojects.com/en/stable/)
 - [Mistune](https://mistune.lepture.com/en/latest/)
 - [html2text](https://pypi.org/project/html2text/)
+- [Markitdown](https://pypi.org/project/markitdown/#description)
 
 ## :checkered_flag: Installation
 
@@ -110,6 +111,7 @@ Options:
   -fl, --flist       List all the folders and subfolders.
   -s, --search       Fuzzy search your notes.
   -r, --remove       Remove the folder you specified.
+  -ex, --export      Export notes to PDF.
   --help             Show this message and exit.
 ```
 

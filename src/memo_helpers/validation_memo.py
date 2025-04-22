@@ -1,7 +1,9 @@
 import click
 
 
-def selection_notes_validation(folder, edit, delete, move, add, flist, search, remove):
+def selection_notes_validation(
+    folder, edit, delete, move, add, flist, search, remove, export
+):
     used_flags = {
         "folder": bool(folder),
         "edit": edit,
@@ -11,6 +13,7 @@ def selection_notes_validation(folder, edit, delete, move, add, flist, search, r
         "flist": flist,
         "search": search,
         "remove": remove,
+        "export": export,
     }
 
     if add and not folder:

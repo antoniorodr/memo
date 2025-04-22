@@ -14,6 +14,7 @@ from memo_helpers.choice_memo import pick_note, pick_reminder
 from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
 from memo_helpers.search_memo import fuzzy_notes
+from memo_helpers.export_memo import export_memo
 
 # TODO: Check if notes can be imported and exported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -70,8 +71,16 @@ def cli():
     is_flag=True,
     help="Remove the folder you specified.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove):
-    selection_notes_validation(folder, edit, delete, move, add, flist, search, remove)
+@click.option(
+    "--export",
+    "-ex",
+    is_flag=True,
+    help="Export notes to PDF.",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove, export):
+    selection_notes_validation(
+        folder, edit, delete, move, add, flist, search, remove, export
+    )
     notes_info = get_note()
     note_map = notes_info[0]
     notes_list = notes_info[1]
@@ -80,7 +89,7 @@ def notes(folder, edit, add, delete, move, flist, search, remove):
     ]
     folders = notes_folders()
 
-    if not flist and not search and not remove:
+    if not flist and not search and not remove and not export:
         click.secho("\nFetching notes...", fg="yellow")
         if folder not in folders:
             click.echo("\nThe folder does not exists.")
@@ -127,6 +136,9 @@ def notes(folder, edit, add, delete, move, flist, search, remove):
             type=str,
         )
         delete_note_folder(folder_to_delete)
+    if export:
+        if click.confirm("\nAre you sure you want to export your notes?"):
+            export_memo()
 
 
 @cli.command()
