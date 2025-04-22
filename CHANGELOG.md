@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 23.04.2025
+
+### Added
+
+- Added support for exporting notes to the desktop and converting them to markdown format. Attachments and images will not be converted.
+
+### Changed
+
+- Small changes and updates to the README file.
+
 ## [0.2.3] - 15.04.2025
 
 ### Changed
@@ -85,6 +95,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.3.0]: htpps://github.com/antoniorodr/memo/releases/tag/v0.3.0
 [0.2.3]: https://github.com/antoniorodr/memo/releases/tag/v0.2.3
 [0.2.2]: https://github.com/antoniorodr/memo/releases/tag/v0.2.2
 [0.2.1]: https://github.com/antoniorodr/memo/releases/tag/v0.2.1

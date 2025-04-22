@@ -58,7 +58,8 @@
 :heavy_check_mark: Edit your notes and reminders right from the terminal\
 :heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
 :heavy_check_mark: Move notes to another folder effortlessly through the terminal\
-:heavy_check_mark: Mark reminders as completed from the terminal
+:heavy_check_mark: Mark reminders as completed from the terminal\
+:heavy_check_mark: Export your notes to HTML and convert them to Markdown
 
 ## :rocket: Technologies
 
@@ -110,6 +111,7 @@ Options:
   -fl, --flist       List all the folders and subfolders.
   -s, --search       Fuzzy search your notes.
   -r, --remove       Remove the folder you specified.
+  -ex, --export      Export your notes to the Desktop.
   --help             Show this message and exit.
 ```
 
