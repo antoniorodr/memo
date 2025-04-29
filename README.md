@@ -48,9 +48,7 @@
 
 ## :computer: Demo
 
-<a href="https://asciinema.org/a/pNryTkFEJPmojjl5iueitd75S" target="_blank">
-  <img src="https://asciinema.org/a/pNryTkFEJPmojjl5iueitd75S.svg" alt="asciicast">
-</a>
+[![asciicast](https://asciinema.org/a/711983.svg)](https://asciinema.org/a/711983)
 
 ## :sparkles: Features
 
