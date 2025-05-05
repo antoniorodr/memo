@@ -1,0 +1,43 @@
+site_name: Memo
+site_url: https://mydomain.org/memo
+repo_url: https://github.com/antoniorodr/memo
+repo_name: Memo
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  logo: memo.png
+  icon:
+    repo: fontawesome/brands/github
+  favicon: memo.png
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - search.suggest
+    - navigation.footer
+    - navigation.path
+    - navigation.top
+  palette:
+    - scheme: default
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    - scheme: slate
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+        primary: amber
+        accent: amber
+plugins:
+  - search
+  - awesome-nav
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/antoniorodr
+copyright: Copyright &copy; 2025 - Antonio Rodriguez

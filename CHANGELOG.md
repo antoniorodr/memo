@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 05.05.2025
+
+### Added
+
+- Material for MkDocs support for the documentation.
+
+### Changed
+
+- Small changes and updates to the README file.
+
 ## [0.3.0] - 23.04.2025
 
 ### Added
@@ -95,6 +105,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.3.1]: https://github.com/antoniorodr/memo/releases/tag/v0.3.1
 [0.3.0]: htpps://github.com/antoniorodr/memo/releases/tag/v0.3.0
 [0.2.3]: https://github.com/antoniorodr/memo/releases/tag/v0.2.3
 [0.2.2]: https://github.com/antoniorodr/memo/releases/tag/v0.2.2

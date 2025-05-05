@@ -90,6 +90,8 @@ brew install antoniorodr/memo/memo
 
 :warning: Be careful when using --edit and --move flags with notes that include images/attachments. Memo does not support this yet. Memo will send you a warning if you try to edit a note with images/attachments.
 
+To read the full documentation, please visit the [docs](https://antoniorodr.github.io/memo)
+
 Use the command `memo notes --help` to see all the options available for notes.
 
 ```bash

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "memo"
 authors = [{ name = "Antonio Rodriguez", email = "antonioinorge@hotmail.com" }]
-version = "0.3.0"
+version = "0.3.1"
 description = "CLI app to manage your Apple Notes and Apple reminders"
 readme = "README.md"
 license = "MIT"
@@ -18,6 +18,11 @@ dependencies = [
   "pytest>=8.3.5",
 ]
 
+
+[project.optional-dependencies]
+docs = ["mkdocs>=1.5.3", "mkdocs-material>=9.5.18", "mkdocs-awesome-nav>=3.1.1"]
+
+
 [project.urls]
 Repository = "https://github.com/antoniorodr/memo"
 Issues = "https://github.com/antoniorodr/memo/issues"
@@ -27,3 +32,6 @@ memo = "memo.memo:cli"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
