@@ -48,7 +48,13 @@
 
 ## :computer: Demo
 
-[![asciicast](https://asciinema.org/a/711983.svg)](https://asciinema.org/a/711983)
+<div align="center" id="top">
+  <img src="./.github/memo.gif" alt="memo" />
+
+&#xa0;
+
+  <!-- <a href="https://memo.netlify.app">Demo</a> -->
+</div>
 
 ## :sparkles: Features
 
