@@ -22,12 +22,13 @@ def get_note():
         return output
     end tell
     """
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
-    notes_list = [line.split("|") for line in result.stdout.strip().split("\n") if line]
-    note_map = {
-        i + 1: (note_id, note_title)
-        for i, (note_id, note_title) in enumerate(notes_list)
-    }
+    notes_list = [
+        line.split("|", 1) for line in result.stdout.strip().split("\n") if line
+    ]
+
+    note_map = {i + 1: (parts[0], parts[1]) for i, parts in enumerate(notes_list)}
 
     if not notes_list:
         click.echo("No notes found.")
