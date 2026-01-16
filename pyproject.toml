@@ -16,6 +16,7 @@ dependencies = [
   "html2text>=2024.2.26",
   "mistune>=3.1.3",
   "pytest>=8.3.5",
+  "urllib3>=2.6.3",
 ]
 
 
