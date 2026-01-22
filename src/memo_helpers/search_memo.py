@@ -16,7 +16,8 @@ def fuzzy_notes():
             result = id_search_memo(note_id)
             original_md = md_converter(result)[0]
 
-            file_path = os.path.join(tmpdirname, f"{note_title}.md")
+            safe_filename = note_title.replace("/", "-").replace("\\", "-")
+            file_path = os.path.join(tmpdirname, f"{safe_filename}.md")
 
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(original_md)
