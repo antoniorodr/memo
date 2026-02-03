@@ -81,51 +81,27 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export
     )
-    notes_info = get_note()
-    note_map = notes_info[0]
-    notes_list = notes_info[1]
-    notes_list_filter = [
-        note for note in enumerate(notes_list, start=1) if folder in note[1]
-    ]
-    folders = notes_folders()
 
-    if not flist and not search and not remove and not export:
-        click.secho("\nFetching notes...", fg="yellow")
-        if folder not in folders:
-            click.echo("\nThe folder does not exists.")
-            click.echo("\nUse 'memo notes -fl' to see your folders")
-        elif not notes_list_filter:
-            click.echo("\nNo notes found.")
-        else:
-            title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
-            click.echo(f"\n{title}\n")
-            for note in notes_list_filter:
-                click.echo(f"{note[0]}. {note[1]}")
+    # Early returns for operations that don't need to fetch all notes
+    # This dramatically improves performance for users with many notes
 
-    if edit:
-        note_id = pick_note(note_map, notes_list_filter, "edit")
-        edit_note(note_id)
-    if add:
-        add_note(folder)
-    if move:
-        note_id = pick_note(note_map, notes_list_filter, "move")
-        if note_id is None:
-            click.echo("Invalid selection.")
-            return
-        target_folder = click.prompt(
-            "\nEnter the folder you want to move the note to", type=str
-        )
-        move_note(note_id, target_folder)
-    if delete:
-        note_id = pick_note(note_map, notes_list_filter, "delete")
-        delete_note(note_id)
     if flist:
+        folders = notes_folders()
         click.echo("\nFolders and subfolders in Notes:")
         click.echo(f"\n{folders}")
+        return
+
+    if add:
+        add_note(folder)
+        return
+
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
         fuzzy_notes()
+        return
+
     if remove:
+        folders = notes_folders()
         click.echo(f"\n{folders}")
         click.secho(
             "\n⚠️ Make sure the folder is empty, because the notes it includes will be deleted too.",
@@ -136,9 +112,55 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
             type=str,
         )
         delete_note_folder(folder_to_delete)
+        return
+
     if export:
         if click.confirm("\nAre you sure you want to export your notes to HTML?"):
             export_memo()
+        return
+
+    # Only fetch notes when actually needed (list, edit, delete, move)
+    click.secho("\nFetching notes...", fg="yellow")
+    notes_info = get_note()
+    note_map = notes_info[0]
+    notes_list = notes_info[1]
+    notes_list_filter = [
+        note for note in enumerate(notes_list, start=1) if folder in note[1]
+    ]
+    folders = notes_folders()
+
+    if edit:
+        note_id = pick_note(note_map, notes_list_filter, "edit")
+        edit_note(note_id)
+        return
+
+    if move:
+        note_id = pick_note(note_map, notes_list_filter, "move")
+        if note_id is None:
+            click.echo("Invalid selection.")
+            return
+        target_folder = click.prompt(
+            "\nEnter the folder you want to move the note to", type=str
+        )
+        move_note(note_id, target_folder)
+        return
+
+    if delete:
+        note_id = pick_note(note_map, notes_list_filter, "delete")
+        delete_note(note_id)
+        return
+
+    # Default: list notes
+    if folder not in folders:
+        click.echo("\nThe folder does not exists.")
+        click.echo("\nUse 'memo notes -fl' to see your folders")
+    elif not notes_list_filter:
+        click.echo("\nNo notes found.")
+    else:
+        title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        click.echo(f"\n{title}\n")
+        for note in notes_list_filter:
+            click.echo(f"{note[0]}. {note[1]}")
 
 
 @cli.command()
