@@ -1,6 +1,7 @@
 import click
 import datetime
 from memo_helpers.get_memo import get_note, get_reminder
+from memo_helpers.sqlite_memo import get_notes_fast, get_folders_fast, count_notes_fast, get_notes_db_path
 from memo_helpers.edit_memo import edit_note, edit_reminder
 from memo_helpers.add_memo import add_note, add_reminder
 from memo_helpers.delete_memo import (
@@ -77,55 +78,109 @@ def cli():
     is_flag=True,
     help="Export your notes to the Desktop.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove, export):
+@click.option(
+    "--limit",
+    "-l",
+    default=0,
+    type=int,
+    help="Limit the number of notes displayed (sorted by most recent).",
+)
+@click.option(
+    "--fast",
+    is_flag=True,
+    help="Use fast SQLite read (read-only, much faster for listing).",
+)
+@click.option(
+    "--count",
+    "-c",
+    is_flag=True,
+    help="Show note count only.",
+)
+@click.option(
+    "--sort",
+    type=click.Choice(["modified", "created"]),
+    default="modified",
+    help="Sort by modification date (default) or creation date.",
+)
+@click.option(
+    "--days",
+    default=0,
+    type=int,
+    help="Filter notes from the last N days (based on sort field).",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove, export, limit, fast, count, sort, days):
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export
     )
-    notes_info = get_note()
-    note_map = notes_info[0]
-    notes_list = notes_info[1]
-    notes_list_filter = [
-        note for note in enumerate(notes_list, start=1) if folder in note[1]
-    ]
-    folders = notes_folders()
 
-    if not flist and not search and not remove and not export:
-        click.secho("\nFetching notes...", fg="yellow")
-        if folder not in folders:
-            click.echo("\nThe folder does not exists.")
-            click.echo("\nUse 'memo notes -fl' to see your folders")
-        elif not notes_list_filter:
-            click.echo("\nNo notes found.")
-        else:
-            title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
-            click.echo(f"\n{title}\n")
-            for note in notes_list_filter:
-                click.echo(f"{note[0]}. {note[1]}")
-
-    if edit:
-        note_id = pick_note(note_map, notes_list_filter, "edit")
-        edit_note(note_id)
-    if add:
-        add_note(folder)
-    if move:
-        note_id = pick_note(note_map, notes_list_filter, "move")
-        if note_id is None:
-            click.echo("Invalid selection.")
+    # Fast SQLite mode for read-only operations
+    if fast or count:
+        if count:
+            n = count_notes_fast(folder if folder else None)
+            click.echo(f"\n{n} notes" + (f" in {folder}" if folder else " total"))
             return
-        target_folder = click.prompt(
-            "\nEnter the folder you want to move the note to", type=str
+        
+        if flist:
+            folders = get_folders_fast()
+            click.echo("\nFolders and subfolders in Notes:")
+            click.echo(f"\n{folders}")
+            return
+        
+        # Fast listing with SQLite
+        click.secho("\nFetching notes (fast mode)...", fg="green")
+        notes_info = get_notes_fast(
+            limit=limit if limit > 0 else None, 
+            folder=folder if folder else None,
+            sort_by=sort,
+            days=days if days > 0 else None
         )
-        move_note(note_id, target_folder)
-    if delete:
-        note_id = pick_note(note_map, notes_list_filter, "delete")
-        delete_note(note_id)
+        note_map = notes_info[0]
+        notes_list = notes_info[1]
+        
+        if not notes_list:
+            click.echo("\nNo notes found.")
+            return
+        
+        title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        if days > 0:
+            title += f" (last {days} days)"
+        if limit > 0:
+            title += f" (limit {limit})"
+        title += f" [sorted by {sort}]"
+        click.echo(f"\n{title}\n")
+        
+        for i, note_title in enumerate(notes_list, start=1):
+            if i in note_map and len(note_map[i]) >= 4:
+                created = note_map[i][2]
+                modified = note_map[i][3]
+                if sort == "created":
+                    click.echo(f"{i}. [créé {created}] {note_title}")
+                else:
+                    click.echo(f"{i}. [modif {modified}] {note_title}")
+            else:
+                click.echo(f"{i}. {note_title}")
+        return
+
+    # Early returns for operations that don't need to fetch all notes
+    # This dramatically improves performance for users with many notes
+
     if flist:
+        folders = notes_folders()
         click.echo("\nFolders and subfolders in Notes:")
         click.echo(f"\n{folders}")
+        return
+
+    if add:
+        add_note(folder)
+        return
+
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
         fuzzy_notes()
+        return
+
     if remove:
+        folders = notes_folders()
         click.echo(f"\n{folders}")
         click.secho(
             "\n⚠️ Make sure the folder is empty, because the notes it includes will be deleted too.",
@@ -136,9 +191,64 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
             type=str,
         )
         delete_note_folder(folder_to_delete)
+        return
+
     if export:
         if click.confirm("\nAre you sure you want to export your notes to HTML?"):
             export_memo()
+        return
+
+    # Only fetch notes when actually needed (list, edit, delete, move)
+    click.secho("\nFetching notes...", fg="yellow")
+    notes_info = get_note(limit=limit if limit > 0 else None)
+    note_map = notes_info[0]
+    notes_list = notes_info[1]
+    notes_list_filter = [
+        note for note in enumerate(notes_list, start=1) if folder in note[1]
+    ]
+    folders = notes_folders()
+
+    if edit:
+        note_id = pick_note(note_map, notes_list_filter, "edit")
+        edit_note(note_id)
+        return
+
+    if move:
+        note_id = pick_note(note_map, notes_list_filter, "move")
+        if note_id is None:
+            click.echo("Invalid selection.")
+            return
+        target_folder = click.prompt(
+            "\nEnter the folder you want to move the note to", type=str
+        )
+        move_note(note_id, target_folder)
+        return
+
+    if delete:
+        note_id = pick_note(note_map, notes_list_filter, "delete")
+        delete_note(note_id)
+        return
+
+    # Default: list notes
+    if folder and folder not in folders:
+        click.echo("\nThe folder does not exists.")
+        click.echo("\nUse 'memo notes -fl' to see your folders")
+    elif not notes_list_filter:
+        click.echo("\nNo notes found.")
+    else:
+        title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        if limit > 0:
+            title += f" (last {limit})"
+        click.echo(f"\n{title}\n")
+        for note in notes_list_filter:
+            # Show modification date if available
+            note_idx = note[0]
+            note_title = note[1]
+            if note_idx in note_map and len(note_map[note_idx]) >= 3:
+                mod_date = note_map[note_idx][2]
+                click.echo(f"{note_idx}. [{mod_date}] {note_title}")
+            else:
+                click.echo(f"{note_idx}. {note_title}")
 
 
 @cli.command()

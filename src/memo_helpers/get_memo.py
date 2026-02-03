@@ -3,7 +3,7 @@ import click
 import datetime
 
 
-def get_note():
+def get_note(limit=None):
     script = """
     set deletedTranslations to {"Recently Deleted", "Nylig slettet", "Senast raderade", "Senest slettet", "Zuletzt gelöscht", "Supprimés récemment", "Eliminados recientemente", "Eliminati di recente", "Recent verwijderd", "Ostatnio usunięte", "Недавно удалённые", "Apagados recentemente", "Apagadas recentemente", "最近删除", "最近刪除", "最近削除した項目", "최근 삭제된 항목", "Son Silinenler", "Äskettäin poistetut", "Nedávno smazané", "Πρόσφατα διαγραμμένα", "Nemrég töröltek", "Șterse recent", "Nedávno vymazané", "เพิ่งลบ", "Đã xóa gần đây", "Нещодавно видалені"}
 
@@ -15,7 +15,9 @@ def get_note():
                 repeat with eachNote in notes of eachFolder
                     set noteName to name of eachNote
                     set noteID to id of eachNote
-                    set output to output & noteID & "|" & folderName & " - " & noteName & "\n"
+                    set modDate to modification date of eachNote
+                    set dateStr to (year of modDate as string) & "-" & text -2 thru -1 of ("0" & ((month of modDate) as integer)) & "-" & text -2 thru -1 of ("0" & (day of modDate)) & " " & text -2 thru -1 of ("0" & (hours of modDate)) & ":" & text -2 thru -1 of ("0" & (minutes of modDate))
+                    set output to output & noteID & "|" & dateStr & "|" & folderName & " - " & noteName & "\n"
                 end repeat
             end if
         end repeat
@@ -24,18 +26,25 @@ def get_note():
     """
 
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
-    notes_list = [
-        line.split("|", 1) for line in result.stdout.strip().split("\n") if line
+    raw_notes = [
+        line.split("|", 2) for line in result.stdout.strip().split("\n") if line and len(line.split("|", 2)) >= 3
     ]
 
-    note_map = {i + 1: (parts[0], parts[1]) for i, parts in enumerate(notes_list)}
+    # Sort by modification date (descending = most recent first)
+    raw_notes.sort(key=lambda x: x[1], reverse=True)
 
-    if not notes_list:
+    # Apply limit if specified
+    if limit and limit > 0:
+        raw_notes = raw_notes[:limit]
+
+    note_map = {i + 1: (parts[0], parts[2], parts[1]) for i, parts in enumerate(raw_notes)}
+
+    if not raw_notes:
         click.echo("No notes found.")
     seen_id = set()
     notes_list = [
         note_title
-        for _, (id, note_title) in note_map.items()
+        for _, (id, note_title, _) in note_map.items()
         if id not in seen_id and not seen_id.add(id)
     ]
     return [note_map, notes_list]

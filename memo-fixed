@@ -1,0 +1,3 @@
+#!/bin/bash
+source ~/clawd/memo/.venv/bin/activate
+exec memo "$@"
