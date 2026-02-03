@@ -1,4 +1,4 @@
-"""
+r"""
 Fast read-only access to Apple Notes via SQLite.
 Only for reading - all write operations should use AppleScript.
 
@@ -6,7 +6,7 @@ WARNING: Apple Notes SQLite schema is undocumented and may change between macOS 
 This module attempts to detect the correct column names automatically, but may break
 on future macOS updates. If it stops working, check the schema with:
 
-    sqlite3 ~/Library/Group\ Containers/group.com.apple.notes/NoteStore.sqlite \\
+    sqlite3 ~/Library/Group\ Containers/group.com.apple.notes/NoteStore.sqlite \
         "PRAGMA table_info(ZICCLOUDSYNCINGOBJECT);" | grep -i title
 
 Known column variations:
