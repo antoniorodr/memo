@@ -13,9 +13,15 @@ def get_notes_db_path():
     return Path.home() / "Library" / "Group Containers" / "group.com.apple.notes" / "NoteStore.sqlite"
 
 
-def get_notes_fast(limit=None, folder=None):
+def get_notes_fast(limit=None, folder=None, sort_by="modified", days=None):
     """
     Fetch notes using SQLite (read-only, much faster than AppleScript).
+    
+    Args:
+        limit: Maximum number of notes to return
+        folder: Filter by folder name
+        sort_by: "modified" (default) or "created"
+        days: Filter notes created/modified within last N days
     
     Returns: [note_map, notes_list] compatible with existing memo format
     """
@@ -29,15 +35,18 @@ def get_notes_fast(limit=None, folder=None):
     conn.execute("PRAGMA query_only = ON")
     cursor = conn.cursor()
     
-    query = """
+    date_field = "ZMODIFICATIONDATE1" if sort_by == "modified" else "ZCREATIONDATE1"
+    
+    query = f"""
     SELECT 
         n.Z_PK as id,
-        datetime(n.ZMODIFICATIONDATE + 978307200, 'unixepoch', 'localtime') as modified,
+        datetime(n.ZCREATIONDATE1 + 978307200, 'unixepoch', 'localtime') as created,
+        datetime(n.ZMODIFICATIONDATE1 + 978307200, 'unixepoch', 'localtime') as modified,
         COALESCE(f.ZTITLE2, 'Notes') as folder,
-        n.ZTITLE as title
+        n.ZTITLE1 as title
     FROM ZICCLOUDSYNCINGOBJECT n
     LEFT JOIN ZICCLOUDSYNCINGOBJECT f ON n.ZFOLDER = f.Z_PK
-    WHERE n.ZTITLE IS NOT NULL 
+    WHERE n.ZTITLE1 IS NOT NULL 
       AND (n.ZMARKEDFORDELETION IS NULL OR n.ZMARKEDFORDELETION = 0)
     """
     
@@ -47,7 +56,11 @@ def get_notes_fast(limit=None, folder=None):
         query += " AND COALESCE(f.ZTITLE2, 'Notes') = ?"
         params.append(folder)
     
-    query += " ORDER BY n.ZMODIFICATIONDATE DESC"
+    if days and days > 0:
+        query += f" AND n.{date_field} >= (strftime('%s', 'now') - 978307200 - ? * 24 * 3600)"
+        params.append(days)
+    
+    query += f" ORDER BY n.{date_field} DESC"
     
     if limit and limit > 0:
         query += f" LIMIT {int(limit)}"
@@ -57,13 +70,13 @@ def get_notes_fast(limit=None, folder=None):
     conn.close()
     
     # Build note_map and notes_list compatible with existing format
-    # note_map: {index: (note_id, "folder - title", modification_date)}
+    # note_map: {index: (note_id, "folder - title", created_date, modified_date)}
     note_map = {}
     notes_list = []
     
-    for i, (note_id, mod_date, folder_name, title) in enumerate(rows, start=1):
+    for i, (note_id, created, modified, folder_name, title) in enumerate(rows, start=1):
         display_title = f"{folder_name} - {title}"
-        note_map[i] = (f"x-coredata://note/{note_id}", display_title, mod_date)
+        note_map[i] = (f"x-coredata://note/{note_id}", display_title, created, modified)
         notes_list.append(display_title)
     
     return [note_map, notes_list]
@@ -117,7 +130,7 @@ def count_notes_fast(folder=None):
         SELECT COUNT(*) 
         FROM ZICCLOUDSYNCINGOBJECT n
         LEFT JOIN ZICCLOUDSYNCINGOBJECT f ON n.ZFOLDER = f.Z_PK
-        WHERE n.ZTITLE IS NOT NULL 
+        WHERE n.ZTITLE1 IS NOT NULL 
           AND (n.ZMARKEDFORDELETION IS NULL OR n.ZMARKEDFORDELETION = 0)
     """
     

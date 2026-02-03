@@ -1,7 +1,7 @@
 import click
 import datetime
 from memo_helpers.get_memo import get_note, get_reminder
-from memo_helpers.sqlite_memo import get_notes_fast, get_folders_fast, count_notes_fast
+from memo_helpers.sqlite_memo import get_notes_fast, get_folders_fast, count_notes_fast, get_notes_db_path
 from memo_helpers.edit_memo import edit_note, edit_reminder
 from memo_helpers.add_memo import add_note, add_reminder
 from memo_helpers.delete_memo import (
@@ -96,7 +96,19 @@ def cli():
     is_flag=True,
     help="Show note count only.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove, export, limit, fast, count):
+@click.option(
+    "--sort",
+    type=click.Choice(["modified", "created"]),
+    default="modified",
+    help="Sort by modification date (default) or creation date.",
+)
+@click.option(
+    "--days",
+    default=0,
+    type=int,
+    help="Filter notes from the last N days (based on sort field).",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove, export, limit, fast, count, sort, days):
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export
     )
@@ -116,7 +128,12 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export, limit,
         
         # Fast listing with SQLite
         click.secho("\nFetching notes (fast mode)...", fg="green")
-        notes_info = get_notes_fast(limit=limit if limit > 0 else None, folder=folder if folder else None)
+        notes_info = get_notes_fast(
+            limit=limit if limit > 0 else None, 
+            folder=folder if folder else None,
+            sort_by=sort,
+            days=days if days > 0 else None
+        )
         note_map = notes_info[0]
         notes_list = notes_info[1]
         
@@ -125,14 +142,21 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export, limit,
             return
         
         title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        if days > 0:
+            title += f" (last {days} days)"
         if limit > 0:
-            title += f" (last {limit})"
+            title += f" (limit {limit})"
+        title += f" [sorted by {sort}]"
         click.echo(f"\n{title}\n")
         
         for i, note_title in enumerate(notes_list, start=1):
-            if i in note_map and len(note_map[i]) >= 3:
-                mod_date = note_map[i][2]
-                click.echo(f"{i}. [{mod_date}] {note_title}")
+            if i in note_map and len(note_map[i]) >= 4:
+                created = note_map[i][2]
+                modified = note_map[i][3]
+                if sort == "created":
+                    click.echo(f"{i}. [créé {created}] {note_title}")
+                else:
+                    click.echo(f"{i}. [modif {modified}] {note_title}")
             else:
                 click.echo(f"{i}. {note_title}")
         return
