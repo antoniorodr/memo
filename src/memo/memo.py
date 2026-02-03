@@ -1,6 +1,7 @@
 import click
 import datetime
 from memo_helpers.get_memo import get_note, get_reminder
+from memo_helpers.sqlite_memo import get_notes_fast, get_folders_fast, count_notes_fast
 from memo_helpers.edit_memo import edit_note, edit_reminder
 from memo_helpers.add_memo import add_note, add_reminder
 from memo_helpers.delete_memo import (
@@ -77,10 +78,64 @@ def cli():
     is_flag=True,
     help="Export your notes to the Desktop.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove, export):
+@click.option(
+    "--limit",
+    "-l",
+    default=0,
+    type=int,
+    help="Limit the number of notes displayed (sorted by most recent).",
+)
+@click.option(
+    "--fast",
+    is_flag=True,
+    help="Use fast SQLite read (read-only, much faster for listing).",
+)
+@click.option(
+    "--count",
+    "-c",
+    is_flag=True,
+    help="Show note count only.",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove, export, limit, fast, count):
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export
     )
+
+    # Fast SQLite mode for read-only operations
+    if fast or count:
+        if count:
+            n = count_notes_fast(folder if folder else None)
+            click.echo(f"\n{n} notes" + (f" in {folder}" if folder else " total"))
+            return
+        
+        if flist:
+            folders = get_folders_fast()
+            click.echo("\nFolders and subfolders in Notes:")
+            click.echo(f"\n{folders}")
+            return
+        
+        # Fast listing with SQLite
+        click.secho("\nFetching notes (fast mode)...", fg="green")
+        notes_info = get_notes_fast(limit=limit if limit > 0 else None, folder=folder if folder else None)
+        note_map = notes_info[0]
+        notes_list = notes_info[1]
+        
+        if not notes_list:
+            click.echo("\nNo notes found.")
+            return
+        
+        title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        if limit > 0:
+            title += f" (last {limit})"
+        click.echo(f"\n{title}\n")
+        
+        for i, note_title in enumerate(notes_list, start=1):
+            if i in note_map and len(note_map[i]) >= 3:
+                mod_date = note_map[i][2]
+                click.echo(f"{i}. [{mod_date}] {note_title}")
+            else:
+                click.echo(f"{i}. {note_title}")
+        return
 
     # Early returns for operations that don't need to fetch all notes
     # This dramatically improves performance for users with many notes
@@ -121,7 +176,7 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
 
     # Only fetch notes when actually needed (list, edit, delete, move)
     click.secho("\nFetching notes...", fg="yellow")
-    notes_info = get_note()
+    notes_info = get_note(limit=limit if limit > 0 else None)
     note_map = notes_info[0]
     notes_list = notes_info[1]
     notes_list_filter = [
@@ -151,16 +206,25 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
         return
 
     # Default: list notes
-    if folder not in folders:
+    if folder and folder not in folders:
         click.echo("\nThe folder does not exists.")
         click.echo("\nUse 'memo notes -fl' to see your folders")
     elif not notes_list_filter:
         click.echo("\nNo notes found.")
     else:
         title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+        if limit > 0:
+            title += f" (last {limit})"
         click.echo(f"\n{title}\n")
         for note in notes_list_filter:
-            click.echo(f"{note[0]}. {note[1]}")
+            # Show modification date if available
+            note_idx = note[0]
+            note_title = note[1]
+            if note_idx in note_map and len(note_map[note_idx]) >= 3:
+                mod_date = note_map[note_idx][2]
+                click.echo(f"{note_idx}. [{mod_date}] {note_title}")
+            else:
+                click.echo(f"{note_idx}. {note_title}")
 
 
 @cli.command()
