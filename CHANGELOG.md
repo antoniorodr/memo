@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.5] - 10.02.2026
+
+### Fixed
+
+- Fixed a bug where `memo notes -fl` crashed when trying to list folders/subfolders that was deleted. Thanks @sajal2692 for the fix!
+
 ## [0.3.4] - 10.02.2026
 
 ### Changed
@@ -123,6 +129,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.3.5]: https://github.com/antoniorodr/memo/releases/tag/v0.3.5
 [0.3.4]: https://github.com/antoniorodr/memo/releases/tag/v0.3.4
 [0.3.3]: https://github.com/antoniorodr/memo/releases/tag/v0.3.3
 [0.3.2]: https://github.com/antoniorodr/memo/releases/tag/v0.3.2
