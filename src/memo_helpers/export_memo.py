@@ -4,12 +4,10 @@ import click
 import html2text
 import chardet
 
-EXPORT_PATH = os.path.expanduser("~/Desktop/notes/")
 
-
-def export_memo():
+def export_memo(path: str):
     script = f"""
-    set exportFolder to "{EXPORT_PATH}"
+    set exportFolder to "{path}"
     do shell script "mkdir -p " & quoted form of exportFolder
 
     on replaceText(find, replace, subject)
@@ -51,21 +49,21 @@ def export_memo():
     """
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode == 0:
-        click.secho("\nNotes exported to Desktop", fg="green")
+        click.secho(f"\nNotes exported to {path}", fg="green")
         if click.confirm(
             "\nDo you want to convert the notes to Markdown? Attachements and pictures will not be converted."
         ):
-            html_to_md()
+            html_to_md(path)
     else:
         click.secho("\nError exporting notes", fg="red")
 
 
-def html_to_md():
-    files = os.listdir(EXPORT_PATH)
-    files_list = [f for f in files if os.path.isfile(os.path.join(EXPORT_PATH, f))]
+def html_to_md(path: str):
+    files = os.listdir(path)
+    files_list = [f for f in files if os.path.isfile(os.path.join(path, f))]
 
     for file in files_list:
-        file_path = os.path.join(EXPORT_PATH, file)
+        file_path = os.path.join(path, file)
         file_name = os.path.splitext(file)[0]
 
         with open(file_path, "rb") as f:
@@ -89,7 +87,7 @@ def html_to_md():
         text_maker.images_to_alt = True
         text_maker.body_width = 0
         original_md = text_maker.handle(html_content).strip()
-        output_path = os.path.join(EXPORT_PATH, f"{file_name}.md")
+        output_path = os.path.join(path, f"{file_name}.md")
 
         with open(output_path, "w", encoding="utf-8") as md_file:
             md_file.write(original_md)

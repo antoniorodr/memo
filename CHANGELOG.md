@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 10.02.2026
+
+### Changed
+
+- Add the possibility to choose the folder to export the notes to when using the `--export` flag. By default, the notes will be exported to the desktop.
+
 ## [0.3.3] - 22.01.2026
 
 ### Fixed
@@ -117,6 +123,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.3.4]: https://github.com/antoniorodr/memo/releases/tag/v0.3.4
 [0.3.3]: https://github.com/antoniorodr/memo/releases/tag/v0.3.3
 [0.3.2]: https://github.com/antoniorodr/memo/releases/tag/v0.3.2
 [0.3.1]: https://github.com/antoniorodr/memo/releases/tag/v0.3.1
