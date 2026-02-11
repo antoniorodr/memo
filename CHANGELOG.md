@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.6] - 11.02.2026
+
+### Fixed
+
+- Fixed a bug where `memo` used a hardcoded title for the new notes. Now, it will use a placeholder which can be edited by the user. Fixes #14.
+
 ## [0.3.5] - 10.02.2026
 
 ### Fixed
@@ -129,6 +135,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.3.6]: https://github.com/antoniorodr/memo/releases/tag/v0.3.6
 [0.3.5]: https://github.com/antoniorodr/memo/releases/tag/v0.3.5
 [0.3.4]: https://github.com/antoniorodr/memo/releases/tag/v0.3.4
 [0.3.3]: https://github.com/antoniorodr/memo/releases/tag/v0.3.3

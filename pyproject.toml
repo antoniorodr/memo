@@ -7,7 +7,7 @@ name = "memo"
 authors = [
   { name = "Antonio Rodriguez", email = "kontakt@antoniorodriguez.no" },
 ]
-version = "0.3.5"
+version = "0.3.6"
 description = "CLI app to manage your Apple Notes and Apple reminders"
 readme = "README.md"
 license = "MIT"
