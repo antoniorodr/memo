@@ -61,6 +61,7 @@
 ## :sparkles: Features
 
 :heavy_check_mark: View your notes and reminders directly from the terminal\
+:heavy_check_mark: Read the full content of a note as clean Markdown from the terminal\
 :heavy_check_mark: Edit your notes and reminders right from the terminal\
 :heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
 :heavy_check_mark: Move notes to another folder effortlessly through the terminal\
@@ -120,6 +121,7 @@ Options:
   -s, --search       Fuzzy search your notes.
   -r, --remove       Remove the folder you specified.
   -ex, --export      Export your notes to the Desktop.
+  -v, --view INTEGER Display the content of note N from the list.
   --help             Show this message and exit.
 ```
 

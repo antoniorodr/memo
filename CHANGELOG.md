@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 18.02.2026
+
+### Added
+
+- Added the `--view` (or `-v`) flag to print the content of a note in the terminal. Solves #20.
+
+Thanks @david-2814 for the contribution!
+
 ## [0.3.6] - 11.02.2026
 
 ### Fixed
