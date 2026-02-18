@@ -143,6 +143,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.4.0]: https://github.com/antoniorodr/memo/releases/tag/v0.4.0
 [0.3.6]: https://github.com/antoniorodr/memo/releases/tag/v0.3.6
 [0.3.5]: https://github.com/antoniorodr/memo/releases/tag/v0.3.5
 [0.3.4]: https://github.com/antoniorodr/memo/releases/tag/v0.3.4
