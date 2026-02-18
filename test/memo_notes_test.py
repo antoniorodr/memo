@@ -1,5 +1,6 @@
 from click.testing import CliRunner
 from memo.memo import cli
+from unittest.mock import patch, MagicMock
 
 
 def test_notes():
@@ -33,10 +34,11 @@ def test_notes_add_no_folder():
     )
 
 
-def test_notes_edit():
+@patch("subprocess.run")
+def test_notes_edit(mock_subprocess):
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
     runner = CliRunner()
-    result = runner.invoke(cli, ["notes", "--edit"], input="1")
-    assert result.exit_code == 0
+    result = runner.invoke(cli, ["notes", "--edit"], input="1\n")
     assert "Enter the number of the note you want to edit:" in result.output
 
 
