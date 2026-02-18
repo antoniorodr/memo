@@ -70,3 +70,23 @@ def test_notes_flist():
     result = runner.invoke(cli, ["notes", "--flist"])
     assert result.exit_code == 0
     assert "Folders and subfolders in Notes:" in result.output
+
+
+def test_notes_view():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "1"])
+    assert result.exit_code == 0
+
+
+def test_notes_view_invalid():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "99999"])
+    assert result.exit_code == 0
+    assert "not found" in result.output
+
+
+def test_notes_view_combined_with_edit():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "1", "--edit"])
+    assert result.exit_code == 2
+    assert "Only one of" in result.output

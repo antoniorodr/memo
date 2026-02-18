@@ -16,6 +16,8 @@ from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
 from memo_helpers.search_memo import fuzzy_notes
 from memo_helpers.export_memo import export_memo
+from memo_helpers.id_search_memo import id_search_memo
+from memo_helpers.md_converter import md_converter
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -78,9 +80,16 @@ def cli():
     is_flag=True,
     help="Export your notes to the Desktop.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove, export):
+@click.option(
+    "--view",
+    "-v",
+    type=int,
+    default=None,
+    help="Display the content of note N from the list.",
+)
+def notes(folder, edit, add, delete, move, flist, search, remove, export, view):
     selection_notes_validation(
-        folder, edit, delete, move, add, flist, search, remove, export
+        folder, edit, delete, move, add, flist, search, remove, export, view
     )
     notes_info = get_note()
     note_map = notes_info[0]
@@ -89,6 +98,19 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export):
         note for note in enumerate(notes_list, start=1) if folder in note[1]
     ]
     folders = notes_folders()
+
+    if view is not None:
+        if view not in note_map:
+            click.secho(f"\nNote {view} not found.", fg="red")
+            return
+        note_id = note_map[view][0]
+        result = id_search_memo(note_id)
+        if result.returncode != 0:
+            click.secho(f"\nFailed to fetch note {view}.", fg="red")
+            return
+        markdown_content = md_converter(result)[0]
+        click.echo(f"\n{markdown_content}")
+        return
 
     if not flist and not search and not remove and not export:
         click.secho("\nFetching notes...", fg="yellow")
