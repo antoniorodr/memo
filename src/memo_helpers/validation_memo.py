@@ -2,7 +2,7 @@ import click
 
 
 def selection_notes_validation(
-    folder, edit, delete, move, add, flist, search, remove, export
+    folder, edit, delete, move, add, flist, search, remove, export, view
 ):
     used_flags = {
         "folder": bool(folder),
@@ -14,11 +14,12 @@ def selection_notes_validation(
         "search": search,
         "remove": remove,
         "export": export,
+        "view": view is not None,
     }
 
     if add and not folder:
         raise click.UsageError(
-            "--add/ must be used indicating a folder to create the note to."
+            "--add must be used indicating a folder to create the note to."
         )
 
     if flist and sum(used_flags.values()) > 1:
@@ -26,9 +27,9 @@ def selection_notes_validation(
             "--flist must be used alone. It cannot be combined with other flags or --folder."
         )
 
-    modifier_flags = ["edit", "delete", "move", "remove", "search", "export"]
+    modifier_flags = ["edit", "delete", "move", "remove", "search", "export", "view"]
     used_modifiers = [f for f in modifier_flags if used_flags[f]]
     if len(used_modifiers) > 1:
         raise click.UsageError(
-            "Only one of --edit, --delete, --move, --remove , --export or search can be used at a time."
+            "Only one of --edit, --delete, --move, --remove, --export, --view, or --search can be used at a time."
         )

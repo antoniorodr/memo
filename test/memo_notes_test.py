@@ -1,5 +1,6 @@
 from click.testing import CliRunner
 from memo.memo import cli
+from unittest.mock import patch, MagicMock
 
 
 def test_notes():
@@ -33,10 +34,11 @@ def test_notes_add_no_folder():
     )
 
 
-def test_notes_edit():
+@patch("subprocess.run")
+def test_notes_edit(mock_subprocess):
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
     runner = CliRunner()
-    result = runner.invoke(cli, ["notes", "--edit"], input="1")
-    assert result.exit_code == 0
+    result = runner.invoke(cli, ["notes", "--edit"], input="1\n")
     assert "Enter the number of the note you want to edit:" in result.output
 
 
@@ -70,3 +72,23 @@ def test_notes_flist():
     result = runner.invoke(cli, ["notes", "--flist"])
     assert result.exit_code == 0
     assert "Folders and subfolders in Notes:" in result.output
+
+
+def test_notes_view():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "1"])
+    assert result.exit_code == 0
+
+
+def test_notes_view_invalid():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "99999"])
+    assert result.exit_code == 0
+    assert "not found" in result.output
+
+
+def test_notes_view_combined_with_edit():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--view", "1", "--edit"])
+    assert result.exit_code == 2
+    assert "Only one of" in result.output
