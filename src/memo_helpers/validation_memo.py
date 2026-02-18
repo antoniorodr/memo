@@ -19,7 +19,7 @@ def selection_notes_validation(
 
     if add and not folder:
         raise click.UsageError(
-            "--add/ must be used indicating a folder to create the note to."
+            "--add must be used indicating a folder to create the note to."
         )
 
     if flist and sum(used_flags.values()) > 1:
