@@ -9,6 +9,6 @@ jobs:
           fetch-depth: 0
       - uses: yesolutions/mirror-action@master
         with:
-          REMOTE: "git@codeberg.org/antoniorodr/memo.git"
+          REMOTE: "git@codeberg.org:antoniorodr/memo.git"
           GIT_SSH_PRIVATE_KEY: ${{ secrets.CODEBERG_SSH_PRIVATE_KEY }}
           GIT_SSH_NO_VERIFY_HOST: true
