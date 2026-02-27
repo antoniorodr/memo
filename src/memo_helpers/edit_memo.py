@@ -3,26 +3,88 @@ import click
 import tempfile
 import mistune
 import os
+import re
+import base64
 import datetime
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
 
 
+def _decode_image_to_tempfile(img_html):
+    """Extract base64 data from an <img> HTML block and write to a temp file."""
+    match = re.search(r'src="data:image/(\w+);base64,([^"]+)"', img_html)
+    if not match:
+        return None
+    ext = match.group(1)
+    data = base64.b64decode(match.group(2))
+    fd, path = tempfile.mkstemp(suffix=f".{ext}")
+    os.write(fd, data)
+    os.close(fd)
+    return path
+
+
+def _reattach_images(note_id, surviving_images):
+    """Delete orphaned attachments and re-add surviving images."""
+    subprocess.run(
+        [
+            "osascript",
+            "-e",
+            f"""
+        tell application "Notes"
+            set n to first note whose id is "{note_id}"
+            repeat while (count of attachments of n) > 0
+                delete first attachment of n
+            end repeat
+        end tell
+    """,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    expected = 0
+    for key in sorted(surviving_images.keys()):
+        filepath = _decode_image_to_tempfile(surviving_images[key])
+        if not filepath:
+            continue
+        expected += 1
+        subprocess.run(
+            [
+                "osascript",
+                "-e",
+                f"""
+            tell application "Notes"
+                set n to first note whose id is "{note_id}"
+                make new attachment at end of attachments of n with data POSIX file "{filepath}"
+                if (count of attachments of n) > {expected} then
+                    delete last attachment of n
+                end if
+            end tell
+        """,
+            ],
+            capture_output=True,
+            text=True,
+        )
+        os.unlink(filepath)
+
+
 def edit_note(note_id):
     result = id_search_memo(note_id)
-    original_md, original_html = md_converter(result)
+    original_md, original_html, image_map = md_converter(result)
 
     with tempfile.NamedTemporaryFile(suffix=".md", delete=False) as temp_file:
         temp_file.write(original_md.encode("utf-8"))
         temp_file_path = temp_file.name
 
-    if "<img" in original_html or "<enclosure" in original_html:
+    if image_map:
         click.secho(
-            "\n⚠️  Warning: This note contains images or attachments that could be lost!",
-            fg="yellow",
+            f"\nℹ️  This note contains {len(image_map)} image(s), shown as [MEMO_IMG_N] placeholders.",
+            fg="cyan",
         )
-        if not click.confirm("\nDo you still want to continue editing the note?"):
-            return
+        click.secho(
+            "  Keep placeholders to preserve images, remove them to delete images.",
+            fg="cyan",
+        )
 
     editor = os.getenv("EDITOR", "vim")
     subprocess.run([editor, temp_file_path])
@@ -33,6 +95,16 @@ def edit_note(note_id):
     if edited_md == original_md:
         click.secho("\nNo changes made.", fg="yellow")
         return
+
+    # Determine which images the user kept (placeholder still present)
+    surviving_images = {}
+    if image_map:
+        for key, img_html in image_map.items():
+            if key in edited_md:
+                surviving_images[key] = img_html
+        # Remove placeholders before converting to HTML
+        for key in image_map:
+            edited_md = edited_md.replace(key, "")
 
     edited_html = mistune.markdown(edited_md)
 
@@ -48,6 +120,15 @@ def edit_note(note_id):
     if process.returncode != 0:
         click.secho("\nError: Could not update note.\n", fg="red")
         click.secho(process.stderr, fg="red")
+        return
+
+    # Re-add images as attachments (set body strips inline base64 images)
+    if surviving_images:
+        _reattach_images(note_id, surviving_images)
+        click.secho(
+            f"\nNote updated. {len(surviving_images)} image(s) preserved.",
+            fg="green",
+        )
     else:
         click.secho("\nNote updated.", fg="green")
 
