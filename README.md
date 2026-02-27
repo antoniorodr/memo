@@ -97,7 +97,7 @@ brew install antoniorodr/memo/memo
 
 ## :bookmark_tabs: Documentation
 
-:warning: Be careful when using --edit and --move flags with notes that include images/attachments. Memo does not support this yet. Memo will send you a warning if you try to edit a note with images/attachments.
+:heavy_check_mark: **Image support:** When editing notes with images, inline images are preserved through the edit cycle. Images appear as `[MEMO_IMG_N]` placeholders in your editor — keep them to preserve images, or remove them to delete images.
 
 To read the full documentation, please visit the [docs](https://antoniorodr.github.io/memo)
 
