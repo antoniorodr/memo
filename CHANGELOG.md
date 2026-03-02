@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 02.03.2026
+
+### Added
+
+- Preserve inline images when editing notes. Merge #24 which fixes #3. Thanks to @Starefossen for the contribution!
+- Update the readme with a warning about the AppleScript limitations when editing notes with images.
+
 ## [0.4.0] - 18.02.2026
 
 ### Added
@@ -143,6 +150,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.5.0]: https://github.com/antoniorodr/memo/releases/tag/v0.5.0
 [0.4.0]: https://github.com/antoniorodr/memo/releases/tag/v0.4.0
 [0.3.6]: https://github.com/antoniorodr/memo/releases/tag/v0.3.6
 [0.3.5]: https://github.com/antoniorodr/memo/releases/tag/v0.3.5
