@@ -78,11 +78,11 @@ def edit_note(note_id):
 
     if image_map:
         click.secho(
-            f"\nℹ️  This note contains {len(image_map)} image(s), shown as [MEMO_IMG_N] placeholders.",
+            f"\nℹ️ This note contains {len(image_map)} image(s), shown as [MEMO_IMG_N] placeholders.",
             fg="cyan",
         )
         click.secho(
-            "  Keep placeholders to preserve images, remove them to delete images.",
+            "Keep placeholders to preserve images, remove them to delete images.",
             fg="cyan",
         )
 
