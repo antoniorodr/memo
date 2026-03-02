@@ -2,6 +2,10 @@ import click
 
 
 def pick_note(note_map, notes_list, action):
+    click.secho(
+        "\nRemember: Due to AppleScript limitations, the images will be preserved at the end of the note.",
+        fg="yellow",
+    )
     choice = click.prompt(
         f"\nEnter the number of the note you want to {action}", type=int
     )

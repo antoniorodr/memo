@@ -1,23 +1,8 @@
 import subprocess
 import click
-import html2text
-from memo_helpers.id_search_memo import id_search_memo
 
 
 def move_note(note_id: str, target_folder: str):
-    result = id_search_memo(note_id)
-    original_html = result.stdout.strip()
-
-    text_maker = html2text.HTML2Text()
-    text_maker.body_width = 0
-
-    if "<img" in original_html or "<enclosure" in original_html:
-        click.secho(
-            "\n⚠️  Warning: This note contains images or attachments that could be lost!",
-            fg="yellow",
-        )
-        if not click.confirm("\nDo you still want to continue moving the note?"):
-            return
 
     script = f'''
     tell application "Notes"
