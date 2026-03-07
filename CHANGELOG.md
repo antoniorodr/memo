@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 07.03.2026
+
+### Added
+
+- Added note list caching (`~/.cache/memo/notes_cache.json`, TTL 5 min) to avoid redundant AppleScript calls on repeated commands.
+- Added `--no-cache` / `-nc` flag to `memo notes` to force a fresh fetch from Notes.
+
+### Changed
+
+- Optimized the AppleScript in `get_note` to use batch property fetching (`id of every note` and `name of every note`) and list-based output instead of string concatenation, reducing fetch time from O(n²) to O(n) for large note collections.
+- Cache is automatically invalidated after `--add`, `--edit`, `--delete`, and `--move` operations.
+- Migration from Material Mkdocs to zensical.
+
+### Modify
+
+- Modify the test to use mocking.
+
 ## [0.5.0] - 02.03.2026
 
 ### Added
@@ -150,6 +167,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.5.1]: https://github.com/antoniorodr/memo/releases/tag/v0.5.1
 [0.5.0]: https://github.com/antoniorodr/memo/releases/tag/v0.5.0
 [0.4.0]: https://github.com/antoniorodr/memo/releases/tag/v0.4.0
 [0.3.6]: https://github.com/antoniorodr/memo/releases/tag/v0.3.6
