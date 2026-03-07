@@ -1,24 +1,35 @@
 import subprocess
 import click
 import datetime
+from memo_helpers.cache_memo import save_cache, load_cache
 
 
 def get_note():
+    cached = load_cache()
+    if cached:
+        return list(cached)
+
     script = """
     set deletedTranslations to {"Recently Deleted", "Nylig slettet", "Senast raderade", "Senest slettet", "Zuletzt gelöscht", "Supprimés récemment", "Eliminados recientemente", "Eliminati di recente", "Recent verwijderd", "Ostatnio usunięte", "Недавно удалённые", "Apagados recentemente", "Apagadas recentemente", "最近删除", "最近刪除", "最近削除した項目", "최근 삭제된 항목", "Son Silinenler", "Äskettäin poistetut", "Nedávno smazané", "Πρόσφατα διαγραμμένα", "Nemrég töröltek", "Șterse recent", "Nedávno vymazané", "เพิ่งลบ", "Đã xóa gần đây", "Нещодавно видалені"}
 
     tell application "Notes"
-        set output to ""
+        set notesList to {}
         repeat with eachFolder in folders
             set folderName to name of eachFolder
             if folderName is not in deletedTranslations then
-                repeat with eachNote in notes of eachFolder
-                    set noteName to name of eachNote
-                    set noteID to id of eachNote
-                    set output to output & noteID & "|" & folderName & " - " & noteName & "\n"
-                end repeat
+                set folderNotes to notes of eachFolder
+                if (count of folderNotes) > 0 then
+                    set noteIDs to id of every note of eachFolder
+                    set noteNames to name of every note of eachFolder
+                    repeat with i from 1 to count of noteIDs
+                        set end of notesList to (item i of noteIDs) & "|" & folderName & " - " & (item i of noteNames)
+                    end repeat
+                end if
             end if
         end repeat
+        set AppleScript's text item delimiters to "\n"
+        set output to notesList as string
+        set AppleScript's text item delimiters to ""
         return output
     end tell
     """
@@ -38,6 +49,8 @@ def get_note():
         for _, (id, note_title) in note_map.items()
         if id not in seen_id and not seen_id.add(id)
     ]
+
+    save_cache(note_map, notes_list)
     return [note_map, notes_list]
 
 
