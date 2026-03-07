@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - Added note list caching (`~/.cache/memo/notes_cache.json`, TTL 5 min) to avoid redundant AppleScript calls on repeated commands.
 - Added `--no-cache` / `-nc` flag to `memo notes` to force a fresh fetch from Notes.
 
+This two features combines fixes #18 and #25.
+
 ### Changed
 
 - Optimized the AppleScript in `get_note` to use batch property fetching (`id of every note` and `name of every note`) and list-based output instead of string concatenation, reducing fetch time from O(n²) to O(n) for large note collections.
