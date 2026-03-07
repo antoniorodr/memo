@@ -1,5 +1,3 @@
-"""Tests for image extraction and restoration in md_converter."""
-import pytest
 from memo_helpers.md_converter import extract_images, restore_images
 import mistune
 import html2text
@@ -17,7 +15,7 @@ def _roundtrip_md(html):
 
 def test_extract_single_image():
     html = (
-        '<div>Text</div>\n'
+        "<div>Text</div>\n"
         '<div><img style="max-width: 100%;" '
         'src="data:image/heic;base64,AAAA1234=="/><br></div>'
     )
@@ -28,7 +26,7 @@ def test_extract_single_image():
 
 
 def test_extract_no_images():
-    html = '<div><h1>Title</h1></div>\n<div>Just text</div>'
+    html = "<div><h1>Title</h1></div>\n<div>Just text</div>"
     cleaned, image_map = extract_images(html)
     assert len(image_map) == 0
     assert cleaned == html
@@ -37,7 +35,7 @@ def test_extract_no_images():
 def test_extract_multiple_images():
     html = (
         '<div><img src="data:image/png;base64,IMG1=="/><br></div>\n'
-        '<div>Between</div>\n'
+        "<div>Between</div>\n"
         '<div><img src="data:image/jpeg;base64,IMG2=="/><br></div>'
     )
     cleaned, image_map = extract_images(html)
@@ -54,7 +52,7 @@ def test_extract_image_without_br():
 
 def test_roundtrip_preserves_image():
     html = (
-        '<div>Keep this</div>\n'
+        "<div>Keep this</div>\n"
         '<div><img src="data:image/png;base64,KEEPME=="/><br></div>'
     )
     md, image_map = _roundtrip_md(html)
@@ -77,7 +75,9 @@ def test_roundtrip_user_removes_placeholder():
 
 
 def test_restore_handles_p_wrapped_placeholder():
-    image_map = {"[MEMO_IMG_1]": '<div><img src="data:image/png;base64,X=="/><br></div>'}
+    image_map = {
+        "[MEMO_IMG_1]": '<div><img src="data:image/png;base64,X=="/><br></div>'
+    }
     html = "<p>Text</p>\n<p>[MEMO_IMG_1]</p>"
     restored = restore_images(html, image_map)
     assert '<div><img src="data:image/png;base64,X=="/><br></div>' in restored

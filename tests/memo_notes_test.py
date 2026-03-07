@@ -2,8 +2,18 @@ from click.testing import CliRunner
 from memo.memo import cli
 from unittest.mock import patch, MagicMock
 
+FAKE_NOTE_ID = "x-coredata://fake-id-123"
+FAKE_NOTE_TITLE = "My Folder - Test Note"
+FAKE_NOTE_MAP = {1: (FAKE_NOTE_ID, FAKE_NOTE_TITLE)}
+FAKE_NOTES_LIST = [FAKE_NOTE_TITLE]
+FAKE_FOLDERS = "My Folder"
 
-def test_notes():
+
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes(mock_get_note, mock_notes_folders):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
     runner = CliRunner()
     result = runner.invoke(cli, ["notes"])
     assert result.exit_code == 0
@@ -17,7 +27,11 @@ def test_notes_folder_without_folder_name():
     assert "Error: Option '--folder' requires an argument." in result.output
 
 
-def test_notes_folder_not_exists():
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_folder_not_exists(mock_get_note, mock_notes_folders):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--folder", "ksndclskdnc"])
     assert result.exit_code == 0
@@ -34,9 +48,13 @@ def test_notes_add_no_folder():
     )
 
 
-@patch("subprocess.run")
-def test_notes_edit(mock_subprocess):
-    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
+@patch("memo.memo.edit_note")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_edit(mock_get_note, mock_notes_folders, mock_edit_note):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_edit_note.return_value = None
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--edit"], input="1\n")
     assert "Enter the number of the note you want to edit:" in result.output
@@ -48,7 +66,13 @@ def test_notes_edit_indexerror():
     assert result.exit_code == 1
 
 
-def test_notes_delete():
+@patch("memo_helpers.delete_memo.subprocess.run")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_delete(mock_get_note, mock_notes_folders, mock_subprocess):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--delete"], input="1")
     assert result.exit_code == 0
@@ -67,20 +91,36 @@ def test_notes_move_indexerror():
     assert result.exit_code == 1
 
 
-def test_notes_flist():
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_flist(mock_get_note, mock_notes_folders):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--flist"])
     assert result.exit_code == 0
     assert "Folders and subfolders in Notes:" in result.output
 
 
-def test_notes_view():
+@patch("memo.memo.id_search_memo")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_view(mock_get_note, mock_notes_folders, mock_id_search):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_id_search.return_value = MagicMock(
+        returncode=0, stdout="<div>Test content</div>", stderr=""
+    )
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--view", "1"])
     assert result.exit_code == 0
 
 
-def test_notes_view_invalid():
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_view_invalid(mock_get_note, mock_notes_folders):
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--view", "99999"])
     assert result.exit_code == 0
