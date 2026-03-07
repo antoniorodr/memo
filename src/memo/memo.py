@@ -15,6 +15,7 @@ from memo_helpers.choice_memo import pick_note, pick_reminder
 from memo_helpers.list_folder import notes_folders
 from memo_helpers.validation_memo import selection_notes_validation
 from memo_helpers.search_memo import fuzzy_notes
+from memo_helpers.cache_memo import clear_cache
 from memo_helpers.export_memo import export_memo
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
@@ -81,16 +82,26 @@ def cli():
     help="Export your notes to the Desktop.",
 )
 @click.option(
+    "--no-cache",
+    "-nc",
+    is_flag=True,
+    help="Bypass the notes cache and fetch fresh data from Notes.",
+)
+@click.option(
     "--view",
     "-v",
     type=int,
     default=None,
     help="Display the content of note N from the list.",
 )
-def notes(folder, edit, add, delete, move, flist, search, remove, export, view):
+def notes(
+    folder, edit, add, delete, move, flist, search, remove, export, view, no_cache
+):
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export, view
     )
+    if no_cache:
+        clear_cache()
     notes_info = get_note()
     note_map = notes_info[0]
     notes_list = notes_info[1]
@@ -128,8 +139,10 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export, view):
     if edit:
         note_id = pick_note(note_map, notes_list_filter, "edit")
         edit_note(note_id)
+        clear_cache()
     if add:
         add_note(folder)
+        clear_cache()
     if move:
         note_id = pick_note(note_map, notes_list_filter, "move")
         if note_id is None:
@@ -139,9 +152,11 @@ def notes(folder, edit, add, delete, move, flist, search, remove, export, view):
             "\nEnter the folder you want to move the note to", type=str
         )
         move_note(note_id, target_folder)
+        clear_cache()
     if delete:
         note_id = pick_note(note_map, notes_list_filter, "delete")
         delete_note(note_id)
+        clear_cache()
     if flist:
         click.echo("\nFolders and subfolders in Notes:")
         click.echo(f"\n{folders}")
