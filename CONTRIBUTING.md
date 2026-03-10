@@ -15,48 +15,66 @@ All participation is governed by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 1. Fork the project and clone your fork:
 
-   ```bash
-   git clone https://github.com/antoniorodr/memo
-   cd memo
-   ```
+    ```bash
+    git clone https://github.com/antoniorodr/memo
+    cd memo
+    ```
 
 2. Create a feature branch:
 
-   ```bash
-   git checkout -b my-feature
-   ```
+    ```bash
+    git checkout -b my-feature
+    ```
 
 3. Set up the environment with [uv](https://github.com/astral-sh/uv):
 
-   ```bash
-   uv venv
-   source .venv/bin/activate
-   uv sync
-   ```
+    ```bash
+    uv venv
+    source .venv/bin/activate
+    uv sync
+    ```
 
 4. (Optional) Uninstall Homebrew version of Memo:
 
-   ```bash
-   brew uninstall memo
-   ```
+    ```bash
+    brew uninstall memo
+    ```
 
 5. Install the CLI locally in editable mode:
 
-   ```bash
-   uv tool install . -e
-   ```
+    ```bash
+    uv tool install . -e
+    ```
 
 6. Run the tool:
 
-   ```bash
-   memo --help
-   ```
+    ```bash
+    memo --help
+    ```
 
 7. (Optional) Uninstall local version when you are done:
 
-   ```bash
-   uv tool uninstall memo
-   ```
+    ```bash
+    uv tool uninstall memo
+    ```
+
+## Testing
+
+This project uses [pytest](https://docs.pytest.org/en/stable/) for testing and coverage reporting.
+
+Dev dependencies (including `pytest-cov`) are installed automatically when you run:
+
+```bash
+uv sync --group dev
+```
+
+To run the tests with coverage:
+
+```bash
+pytest
+```
+
+Coverage is configured in `pyproject.toml` and will output a summary in the terminal as well as a `coverage.lcov` file.
 
 ## Commit Style
 
@@ -72,9 +90,9 @@ docs: improve usage section
 
 1. Push your feature branch:
 
-   ```bash
-   git push origin my-feature
-   ```
+    ```bash
+    git push origin my-feature
+    ```
 
 2. Open a pull request via GitHub’s web interface.
 
@@ -91,6 +109,14 @@ Contributions should be:
 - Properly tested and validated
 
 Using AI tools to assist with code completion, suggestions, or documentation is fine, but the contributor must understand and take responsibility for all submitted code.
+
+### Consequences of AI-Generated Code
+
+We'd rather help you improve a PR than close it. But we can't review work that wasn't reviewed by the person submitting it.
+
+- **First time:** You'll get a warning and a chance to fix the PR.
+- **Second time:** The PR will be closed.
+- **Repeated offenses:** May be reported to GitHub as spam.
 
 ## Submitting Issues
 

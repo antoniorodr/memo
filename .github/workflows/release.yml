@@ -32,7 +32,8 @@ jobs:
               uses: ncipollo/release-action@v1
               with:
                   tag: ${{ github.ref_name }}
-                  name: ${{ github.ref_name }}
+                  name: Memo - ${{ github.ref_name }}
                   bodyFile: /tmp/release_notes.md
                   artifacts: dist/*
                   artifactErrorsFailBuild: true
+                  makeLatest: true
