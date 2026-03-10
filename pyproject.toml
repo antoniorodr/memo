@@ -32,6 +32,12 @@ package-dir = { "" = "src" }
 
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]
+addopts = "--cov=memo --cov=memo_helpers --cov-report=term-missing --cov-report=lcov:coverage.lcov"
 
 [dependency-groups]
-dev = ["pytest>=8.3.5", "zensical>=0.0.24"]
+dev = [
+  "pytest-cov>=7.0.0",
+  "pytest-asyncio>=1.2.0",
+  "pytest>=8.3.5",
+  "zensical>=0.0.24",
+]
