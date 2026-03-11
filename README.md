@@ -1,12 +1,10 @@
 <div align="center" id="top">
-  <img height=200px src="./.github/Memo.png" alt="memo" />
+  <img height=100px src="./.github/Memo.png" alt="memo" />
 
 &#xa0;
 
   <!-- <a href="https://memo.netlify.app">Demo</a> -->
 </div>
-
-<h1 align="center">memo</h1>
 
 <p align="center">
   <img alt="Github top language" src="https://img.shields.io/github/languages/top/antoniorodr/memo?color=56BEB8">
