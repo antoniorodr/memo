@@ -19,6 +19,7 @@ from memo_helpers.cache_memo import clear_cache
 from memo_helpers.export_memo import export_memo
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
+from memo_helpers.api_memo import list_notes
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -203,6 +204,26 @@ def notes(
 def api():
     """Machine-friendly API for notes (non-interactive)."""
     pass
+
+
+@api.command("list")
+@click.option(
+    "--folder",
+    "-f",
+    default="",
+    help="Filter notes by folder (prefix match).",
+)
+@click.option(
+    "--format",
+    type=click.Choice(["tsv", "lines", "json"]),
+    default="tsv",
+    help="Output format.",
+)
+def api_list(folder, format):
+    """List notes with stable IDs and titles (no cache)."""
+    output = list_notes(folder=folder, format=format)
+    if output:
+        click.echo(output)
 
 
 @cli.command()
