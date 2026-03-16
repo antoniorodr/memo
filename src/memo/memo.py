@@ -31,7 +31,7 @@ def cli():
     pass
 
 
-@cli.command()
+@cli.group(invoke_without_command=True)
 @click.option(
     "--folder",
     "-f",
@@ -94,9 +94,12 @@ def cli():
     default=None,
     help="Display the content of note N from the list.",
 )
+@click.pass_context
 def notes(
-    folder, edit, add, delete, move, flist, search, remove, export, view, no_cache
+    ctx, folder, edit, add, delete, move, flist, search, remove, export, view, no_cache
 ):
+    if ctx.invoked_subcommand is not None:
+        return
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export, view
     )
@@ -194,6 +197,12 @@ def notes(
                     return
 
             export_memo(export_path)
+
+
+@notes.group()
+def api():
+    """Machine-friendly API for notes (non-interactive)."""
+    pass
 
 
 @cli.command()
