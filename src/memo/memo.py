@@ -19,7 +19,13 @@ from memo_helpers.cache_memo import clear_cache
 from memo_helpers.export_memo import export_memo
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
-from memo_helpers.api_memo import list_notes
+from memo_helpers.api_memo import (
+    list_notes,
+    show_note,
+    edit_note_stdin,
+    add_note_stdin,
+    _read_stdin_content,
+)
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -224,6 +230,46 @@ def api_list(folder, format):
     output = list_notes(folder=folder, format=format)
     if output:
         click.echo(output)
+
+
+@api.command("show")
+@click.argument("note_id")
+def api_show(note_id):
+    """Output note body as Markdown."""
+    content, err = show_note(note_id)
+    if content is not None:
+        click.echo(content)
+    else:
+        click.echo(err or "Note not found.", err=True)
+        raise SystemExit(2)
+
+
+@api.command("edit")
+@click.argument("note_id")
+def api_edit(note_id):
+    """Replace note body with content from stdin."""
+    content = _read_stdin_content()
+    if content is None:
+        click.echo("No input provided. Pipe content or redirect from a file.", err=True)
+        raise SystemExit(1)
+    ok, err = edit_note_stdin(note_id, content)
+    if not ok:
+        click.echo(err or "Failed to update note.", err=True)
+        raise SystemExit(3)
+
+
+@api.command("add")
+@click.option("--folder", "-f", required=True, help="Folder to create note in.")
+def api_add(folder):
+    """Create a note from stdin."""
+    content = _read_stdin_content()
+    if content is None:
+        click.echo("No input provided. Pipe content or redirect from a file.", err=True)
+        raise SystemExit(1)
+    ok, err = add_note_stdin(folder, content)
+    if not ok:
+        click.echo(err or "Failed to create note.", err=True)
+        raise SystemExit(3)
 
 
 @cli.command()
