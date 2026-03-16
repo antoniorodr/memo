@@ -64,7 +64,8 @@
 :heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
 :heavy_check_mark: Move notes to another folder effortlessly through the terminal\
 :heavy_check_mark: Mark reminders as completed from the terminal\
-:heavy_check_mark: Export your notes to HTML and convert them to Markdown
+:heavy_check_mark: Export your notes to HTML and convert them to Markdown\
+:heavy_check_mark: Notes API for non-interactive use (scripts, agents)
 
 ## :rocket: Technologies
 
@@ -105,24 +106,57 @@ Use the command `memo notes --help` to see all the options available for notes.
 
 ```bash
 memo notes --help
-Usage: memo notes [OPTIONS]
+Usage: memo notes [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  -f, --folder TEXT  Specify a folder to filter the notes (leave empty to get
-                     all).
-  -a, --add          Add a note to the specified folder. Specify a folder
-                     using the --folder flag.
-  -e, --edit         Edit a note in the specified folder. Specify a folder
-                     using the --folder flag.
-  -d, --delete       Delete a note in the specified folder. Specify a folder
-                     using the --folder flag.
-  -m, --move         Move a note to a different folder.
-  -fl, --flist       List all the folders and subfolders.
-  -s, --search       Fuzzy search your notes.
-  -r, --remove       Remove the folder you specified.
-  -ex, --export      Export your notes to the Desktop.
-  -v, --view INTEGER Display the content of note N from the list.
-  --help             Show this message and exit.
+  -f, --folder TEXT   Specify a folder to filter the notes (leave empty to get all).
+  -a, --add           Add a note to the specified folder.
+  -e, --edit          Edit a note in the specified folder.
+  -d, --delete        Delete a note in the specified folder.
+  -m, --move          Move a note to a different folder.
+  -fl, --flist        List all the folders and subfolders.
+  -s, --search        Fuzzy search your notes.
+  -r, --remove        Remove the folder you specified.
+  -ex, --export       Export your notes to the Desktop.
+  -nc, --no-cache     Bypass the notes cache and fetch fresh data.
+  -v, --view INTEGER  Display the content of note N from the list.
+  --help              Show this message and exit.
+
+Commands:
+  api  Machine-friendly API for notes (non-interactive).
+```
+
+### Notes API (for agents)
+
+The `memo notes api` subcommand provides non-interactive, machine-friendly operations for scripts and AI agents. Output is plain text, well-parsable, with no prompts or colored messages. Use `memo notes api --help` for full details.
+
+```bash
+memo notes api list [--folder FOLDER] [--format tsv|lines|json]
+memo notes api show <note-id>
+memo notes api edit <note-id>          # reads from stdin
+memo notes api add --folder FOLDER     # reads from stdin
+memo notes api delete <note-id>
+memo notes api move <note-id> <target-folder>
+memo notes api folders [--format tsv|lines|json]
+memo notes api search <query> [--folder FOLDER] [--body]
+memo notes api remove <folder-path> --force
+memo notes api export --path PATH [--markdown]
+```
+
+Examples:
+
+```bash
+# List notes in a folder (TSV: id, folder, title)
+memo notes api list -f "Work"
+
+# Show note content as Markdown
+memo notes api show x-coredata://.../ICNote/p123
+
+# Edit note from file
+memo notes api edit x-coredata://.../ICNote/p123 < note.md
+
+# Create note from stdin
+echo "# New note" | memo notes api add -f "Work"
 ```
 
 Use the command `memo rem --help` to see all the options available for reminders.
@@ -149,8 +183,8 @@ Options:
   --help     Show this message and exit.
 
 Commands:
-  notes
-  rem
+  notes  Manage Apple Notes (interactive and api subcommands).
+  rem    Manage Apple Reminders.
 ```
 
 Memo uses `$EDITOR` to edit and add notes. You can set it up by running the following command:
