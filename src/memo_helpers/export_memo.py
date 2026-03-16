@@ -5,7 +5,7 @@ import html2text
 import chardet
 
 
-def export_memo(path: str):
+def export_memo(path: str, quiet=False, to_markdown=False):
     script = f"""
     set exportFolder to "{path}"
     do shell script "mkdir -p " & quoted form of exportFolder
@@ -49,16 +49,21 @@ def export_memo(path: str):
     """
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode == 0:
-        click.secho(f"\nNotes exported to {path}", fg="green")
-        if click.confirm(
+        if not quiet:
+            click.secho(f"\nNotes exported to {path}", fg="green")
+        if quiet and to_markdown:
+            html_to_md(path, quiet=True)
+        elif not quiet and click.confirm(
             "\nDo you want to convert the notes to Markdown? Attachements and pictures will not be converted."
         ):
             html_to_md(path)
     else:
-        click.secho("\nError exporting notes", fg="red")
+        if not quiet:
+            click.secho("\nError exporting notes", fg="red")
+    return result.returncode == 0, result.stderr if result.returncode != 0 else None
 
 
-def html_to_md(path: str):
+def html_to_md(path: str, quiet=False):
     files = os.listdir(path)
     files_list = [f for f in files if os.path.isfile(os.path.join(path, f))]
 
@@ -92,4 +97,5 @@ def html_to_md(path: str):
         with open(output_path, "w", encoding="utf-8") as md_file:
             md_file.write(original_md)
 
-    click.secho("\nAll notes succesfully converted to Markdown", fg="green")
+    if not quiet:
+        click.secho("\nAll notes succesfully converted to Markdown", fg="green")

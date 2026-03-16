@@ -21,6 +21,8 @@ from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
 from memo_helpers.api_memo import (
     list_notes,
+    list_folders,
+    search_notes,
     show_note,
     edit_note_stdin,
     add_note_stdin,
@@ -269,6 +271,83 @@ def api_add(folder):
     ok, err = add_note_stdin(folder, content)
     if not ok:
         click.echo(err or "Failed to create note.", err=True)
+        raise SystemExit(3)
+
+
+@api.command("delete")
+@click.argument("note_id")
+def api_delete(note_id):
+    """Delete a note by ID."""
+    ok, err = delete_note(note_id, quiet=True)
+    if not ok:
+        click.echo(err or "Failed to delete note.", err=True)
+        raise SystemExit(3)
+
+
+@api.command("move")
+@click.argument("note_id")
+@click.argument("target_folder")
+def api_move(note_id, target_folder):
+    """Move a note to another folder."""
+    ok, err = move_note(note_id, target_folder, quiet=True)
+    if not ok:
+        click.echo(err or "Failed to move note.", err=True)
+        raise SystemExit(3)
+
+
+@api.command("folders")
+@click.option(
+    "--format",
+    type=click.Choice(["tsv", "lines", "json"]),
+    default="tsv",
+    help="Output format.",
+)
+def api_folders(format):
+    """List folders and subfolders in parsable format."""
+    output = list_folders(format=format)
+    if output:
+        click.echo(output)
+
+
+@api.command("search")
+@click.argument("query")
+@click.option("--folder", "-f", default="", help="Filter by folder.")
+@click.option(
+    "--format",
+    type=click.Choice(["tsv", "lines", "json"]),
+    default="tsv",
+    help="Output format.",
+)
+@click.option("--body", is_flag=True, help="Also search note body.")
+def api_search(query, folder, format, body):
+    """Search notes by substring match."""
+    output = search_notes(query, folder, format, search_body=body)
+    if output:
+        click.echo(output)
+
+
+@api.command("remove")
+@click.argument("folder_path", nargs=-1, required=True)
+@click.option("--force", is_flag=True, required=True, help="Required to confirm deletion.")
+def api_remove(folder_path, force):
+    """Delete a folder and all notes in it."""
+    folder_path = " ".join(folder_path)
+    ok, err = delete_note_folder(folder_path, quiet=True)
+    if not ok:
+        click.echo(err or "Failed to remove folder.", err=True)
+        raise SystemExit(3)
+
+
+@api.command("export")
+@click.option("--path", "-p", "export_path", required=True, help="Export directory.")
+@click.option("--markdown", is_flag=True, help="Convert to Markdown after export.")
+def api_export(export_path, markdown):
+    """Export all notes to a directory."""
+    if not os.path.exists(export_path):
+        os.makedirs(export_path, exist_ok=True)
+    ok, err = export_memo(export_path, quiet=True, to_markdown=markdown)
+    if not ok:
+        click.echo(err or "Failed to export.", err=True)
         raise SystemExit(3)
 
 

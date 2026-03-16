@@ -4,25 +4,8 @@ import click
 FOLDER_SEPARATOR = "|||"
 
 
-def _build_tree(folders_with_parents):
-    """Build a folder tree from a flat list of (name, parent) tuples."""
-    children = {}
-    for name, parent in folders_with_parents:
-        children.setdefault(parent, []).append(name)
-    return children
-
-
-def _render_tree(children, parent="", indent=0):
-    """Render the folder tree as indented text."""
-    lines = []
-    for name in children.get(parent, []):
-        lines.append(" " * indent + name)
-        if name in children:
-            lines.extend(_render_tree(children, name, indent + 2))
-    return lines
-
-
-def notes_folders():
+def folders_with_parents():
+    """Return list of (name, parent) for each folder."""
     script = f"""
     tell application "Notes"
     set output to ""
@@ -44,22 +27,48 @@ def notes_folders():
     return output
     end tell
     """
-
     try:
         result = subprocess.run(
             ["osascript", "-e", script], capture_output=True, text=True, check=True
         )
         raw = result.stdout.strip()
         if not raw:
-            return ""
-
-        folders_with_parents = []
+            return []
+        folders = []
         for line in raw.split("\n"):
             if FOLDER_SEPARATOR in line:
                 name, parent = line.split(FOLDER_SEPARATOR, 1)
-                folders_with_parents.append((name.strip(), parent.strip()))
+                folders.append((name.strip(), parent.strip()))
+        return folders
+    except subprocess.CalledProcessError:
+        return []
 
-        children = _build_tree(folders_with_parents)
+
+def _build_tree(folders_with_parents_list):
+    """Build a folder tree from a flat list of (name, parent) tuples."""
+    children = {}
+    for name, parent in folders_with_parents_list:
+        children.setdefault(parent, []).append(name)
+    return children
+
+
+def _render_tree(children, parent="", indent=0):
+    """Render the folder tree as indented text."""
+    lines = []
+    for name in children.get(parent, []):
+        lines.append(" " * indent + name)
+        if name in children:
+            lines.extend(_render_tree(children, name, indent + 2))
+    return lines
+
+
+def notes_folders():
+    try:
+        folders_with_parents_list = folders_with_parents()
+        if not folders_with_parents_list:
+            return ""
+
+        children = _build_tree(folders_with_parents_list)
         lines = _render_tree(children)
         return "\n".join(lines)
     except subprocess.CalledProcessError as e:

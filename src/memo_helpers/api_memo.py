@@ -11,6 +11,7 @@ import mistune
 from memo_helpers.get_memo import get_note
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
+from memo_helpers.list_folder import folders_with_parents, _build_tree
 
 
 def _read_stdin_content():
@@ -44,6 +45,63 @@ def _update_note_body(note_id, html_content):
     finally:
         if os.path.exists(path):
             os.unlink(path)
+
+
+def _folder_paths(children, parent="", prefix=""):
+    """Build list of folder paths from tree."""
+    paths = []
+    for name in children.get(parent, []):
+        path = f"{prefix}{name}" if prefix else name
+        paths.append(path)
+        if name in children:
+            paths.extend(_folder_paths(children, name, f"{path}/"))
+    return paths
+
+
+def list_folders(format="tsv"):
+    """List folders and subfolders in parsable format."""
+    fwp = folders_with_parents()
+    children = _build_tree(fwp)
+    paths = _folder_paths(children)
+    if format == "json":
+        return "\n".join(json.dumps({"path": p}) for p in paths)
+    return "\n".join(paths)
+
+
+def search_notes(query, folder="", format="tsv", search_body=False):
+    """Search notes by substring match on title (and optionally body)."""
+    note_map, notes_list = get_note(use_cache=False)
+    notes_list_filter = [n for n in enumerate(notes_list, start=1) if folder in n[1]]
+    matches = []
+    query_lower = query.lower()
+    for idx, note_title in notes_list_filter:
+        note_data = note_map.get(idx)
+        if note_data is None:
+            continue
+        note_id, full_title = note_data
+        if " - " in full_title:
+            folder_name, title = full_title.split(" - ", 1)
+        else:
+            folder_name, title = "", full_title
+        if query_lower in title.lower():
+            matches.append((note_id, folder_name, title))
+        elif search_body:
+            result = id_search_memo(note_id)
+            if result.returncode == 0:
+                md = md_converter(result)[0]
+                if query_lower in md.lower():
+                    matches.append((note_id, folder_name, title))
+    lines = []
+    for note_id, folder_name, title in matches:
+        if format == "tsv":
+            lines.append(f"{note_id}\t{folder_name}\t{title}")
+        elif format == "lines":
+            lines.append(f"{note_id}|{folder_name}|{title}")
+        elif format == "json":
+            lines.append(
+                json.dumps({"id": note_id, "folder": folder_name, "title": title})
+            )
+    return "\n".join(lines)
 
 
 def list_notes(folder="", format="tsv"):

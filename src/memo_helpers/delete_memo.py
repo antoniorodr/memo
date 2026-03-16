@@ -2,7 +2,7 @@ import click
 import subprocess
 
 
-def delete_note(note_id):
+def delete_note(note_id, quiet=False):
     script = f'''
     tell application "Notes"
         set theNote to first note whose id is "{note_id}"
@@ -13,12 +13,15 @@ def delete_note(note_id):
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
 
     if result.returncode == 0:
-        click.secho("\nNote deleted successfully.", fg="green")
+        if not quiet:
+            click.secho("\nNote deleted successfully.", fg="green")
     else:
-        click.secho(f"Error: {result.stderr}", fg="red")
+        if not quiet:
+            click.secho(f"Error: {result.stderr}", fg="red")
+    return result.returncode == 0, result.stderr
 
 
-def delete_note_folder(folder_name):
+def delete_note_folder(folder_name, quiet=False):
     script = f'''
     tell application "Notes"
         set selectedFolder to first folder whose name is "{folder_name}"
@@ -28,9 +31,12 @@ def delete_note_folder(folder_name):
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
 
     if result.returncode == 0:
-        click.secho("\nFolder deleted successfully.", fg="green")
+        if not quiet:
+            click.secho("\nFolder deleted successfully.", fg="green")
     else:
-        click.secho(f"Error: {result.stderr}", fg="red")
+        if not quiet:
+            click.secho(f"Error: {result.stderr}", fg="red")
+    return result.returncode == 0, result.stderr
 
 
 def complete_reminder(reminder_id):

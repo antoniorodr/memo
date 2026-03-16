@@ -2,8 +2,7 @@ import subprocess
 import click
 
 
-def move_note(note_id: str, target_folder: str):
-
+def move_note(note_id: str, target_folder: str, quiet=False):
     script = f'''
     tell application "Notes"
         set noteToMove to missing value
@@ -37,6 +36,9 @@ def move_note(note_id: str, target_folder: str):
     '''
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode == 0:
-        click.secho(f'\n✅ The note was moved to "{target_folder}" folder.', fg="green")
+        if not quiet:
+            click.secho(f'\n✅ The note was moved to "{target_folder}" folder.', fg="green")
     else:
-        click.secho(f"\n❌ Error while moving: {result.stderr}", fg="red")
+        if not quiet:
+            click.secho(f"\n❌ Error while moving: {result.stderr}", fg="red")
+    return result.returncode == 0, result.stderr
