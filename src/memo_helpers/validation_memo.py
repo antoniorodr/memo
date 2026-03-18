@@ -2,7 +2,8 @@ import click
 
 
 def selection_notes_validation(
-    folder, edit, delete, move, add, flist, search, remove, export, view
+    folder, edit, delete, move, add, flist, search, remove, export, view,
+    title=None, body=None
 ):
     used_flags = {
         "folder": bool(folder),
@@ -20,6 +21,11 @@ def selection_notes_validation(
     if add and not folder:
         raise click.UsageError(
             "--add must be used indicating a folder to create the note to."
+        )
+
+    if (title is not None or body is not None) and not add:
+        raise click.UsageError(
+            "--title and --body must be used with --add."
         )
 
     if flist and sum(used_flags.values()) > 1:

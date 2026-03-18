@@ -132,3 +132,93 @@ def test_notes_view_combined_with_edit():
     result = runner.invoke(cli, ["notes", "--view", "1", "--edit"])
     assert result.exit_code == 2
     assert "Only one of" in result.output
+
+
+# --- Non-interactive add tests ---
+
+
+@patch("memo_helpers.add_memo.subprocess.run")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_add_noninteractive_title_and_body(
+    mock_get_note, mock_notes_folders, mock_subprocess
+):
+    """--title and --body skip the editor and create the note directly."""
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "notes",
+            "--add",
+            "--folder", "My Folder",
+            "--title", "My Test Note",
+            "--body", "Hello from the test.",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Note created in 'My Folder' folder." in result.output
+    # The editor must NOT have been opened — only osascript should have been called.
+    called_commands = [call.args[0] for call in mock_subprocess.call_args_list]
+    assert all(cmd[0] == "osascript" for cmd in called_commands)
+
+
+@patch("memo_helpers.add_memo.subprocess.run")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_add_noninteractive_title_only(
+    mock_get_note, mock_notes_folders, mock_subprocess
+):
+    """--title without --body creates a note with a title and no body."""
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["notes", "--add", "--folder", "My Folder", "--title", "Title Only"],
+    )
+    assert result.exit_code == 0
+    assert "Note created in 'My Folder' folder." in result.output
+
+
+def test_notes_add_title_without_add_flag():
+    """--title without --add should raise a UsageError."""
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["notes", "--folder", "My Folder", "--title", "Orphaned Title"]
+    )
+    assert result.exit_code == 2
+    assert "--title and --body must be used with --add." in result.output
+
+
+def test_notes_add_body_without_add_flag():
+    """--body without --add should raise a UsageError."""
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["notes", "--folder", "My Folder", "--body", "Orphaned body"]
+    )
+    assert result.exit_code == 2
+    assert "--title and --body must be used with --add." in result.output
+
+
+@patch("memo_helpers.add_memo.subprocess.run")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_add_noninteractive_stdin(
+    mock_get_note, mock_notes_folders, mock_subprocess
+):
+    """Piped stdin content is used as Markdown when no --title/--body given."""
+    mock_get_note.return_value = [FAKE_NOTE_MAP, FAKE_NOTES_LIST]
+    mock_notes_folders.return_value = FAKE_FOLDERS
+    mock_subprocess.return_value = MagicMock(returncode=0, stderr="", stdout="")
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["notes", "--add", "--folder", "My Folder"],
+        input="# Piped Note\n\nThis came from stdin.",
+    )
+    assert result.exit_code == 0
+    assert "Note created in 'My Folder' folder." in result.output

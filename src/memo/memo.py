@@ -94,11 +94,28 @@ def cli():
     default=None,
     help="Display the content of note N from the list.",
 )
+@click.option(
+    "--title",
+    "-t",
+    default=None,
+    help="Title for the new note (use with --add and --folder for non-interactive creation).",
+)
+@click.option(
+    "--body",
+    "-b",
+    default=None,
+    help=(
+        "Body for the new note (use with --add and --folder). "
+        "Pass '-' to read from stdin."
+    ),
+)
 def notes(
-    folder, edit, add, delete, move, flist, search, remove, export, view, no_cache
+    folder, edit, add, delete, move, flist, search, remove, export, view, no_cache,
+    title, body
 ):
     selection_notes_validation(
-        folder, edit, delete, move, add, flist, search, remove, export, view
+        folder, edit, delete, move, add, flist, search, remove, export, view,
+        title, body
     )
     if no_cache:
         clear_cache()
@@ -141,7 +158,8 @@ def notes(
         edit_note(note_id)
         clear_cache()
     if add:
-        add_note(folder)
+        body_content = click.get_text_stream("stdin").read() if body == "-" else body
+        add_note(folder, title=title, body=body_content)
         clear_cache()
     if move:
         note_id = pick_note(note_map, notes_list_filter, "move")
