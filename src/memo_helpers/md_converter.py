@@ -41,47 +41,95 @@ def normalize_notes_heading_blocks(html):
     than <h1>/<h2>/<h3>. Convert only the narrow patterns we understand before
     handing HTML to html2text.
     """
-
-    heading_patterns = (
-        (
-            re.compile(
-                r"<div>\s*<b>\s*<span[^>]*style=\"[^\"]*font-size:\s*24px[^\"]*\"[^>]*>"
-                r"\s*(.*?)\s*</span>\s*</b>\s*</div>",
-                re.IGNORECASE | re.DOTALL,
-            ),
-            "h1",
-        ),
-        (
-            re.compile(
-                r"<div>\s*<b>\s*<span[^>]*style=\"[^\"]*font-size:\s*18px[^\"]*\"[^>]*>"
-                r"\s*(.*?)\s*</span>\s*</b>\s*</div>",
-                re.IGNORECASE | re.DOTALL,
-            ),
-            "h2",
-        ),
-    )
-
-    normalized_html = html
-    for pattern, heading_tag in heading_patterns:
-        normalized_html = pattern.sub(
-            lambda match: f"<{heading_tag}>{match.group(1).strip()}</{heading_tag}>",
-            normalized_html,
-        )
-
-    h3_pattern = re.compile(
-        r"<div>\s*<b>\s*([^<]+?)\s*</b>\s*</div>",
+    heading_block_pattern = re.compile(
+        r"<div>\s*<b>\s*"
+        r"(?:(?:<span[^>]*style=\"[^\"]*font-size:\s*(?P<size>24|18)px[^\"]*\"[^>]*>"
+        r"(?P<span_text>.*?)</span>)|(?P<plain_text>[^<]*?))"
+        r"\s*</b>\s*(?:<br\s*/?>\s*)?</div>",
         re.IGNORECASE | re.DOTALL,
     )
 
-    def replace_h3(match):
-        text = match.group(1).strip()
+    def normalize_heading_text(text):
+        text = re.sub(r"<br\s*/?>", " ", text, flags=re.IGNORECASE)
+        text = re.sub(r"&nbsp;|&#160;", " ", text, flags=re.IGNORECASE)
+        text = re.sub(r"<[^>]+>", "", text)
+        return re.sub(r"\s+", " ", text).strip()
+
+    def classify_heading_block(match):
+        size = match.group("size")
+        if size == "24":
+            return "h1", normalize_heading_text(match.group("span_text"))
+        if size == "18":
+            return "h2", normalize_heading_text(match.group("span_text"))
+
+        text = normalize_heading_text(match.group("plain_text") or "")
         if re.search(r"[.!?]", text):
-            return match.group(0)
-        return f"<h3>{text}</h3>"
+            return None
+        return "h3", text
 
-    normalized_html = h3_pattern.sub(replace_h3, normalized_html)
+    output = []
+    pending_tag = None
+    pending_parts = []
+    cursor = 0
 
-    return normalized_html
+    def flush_pending():
+        nonlocal pending_tag, pending_parts
+        if pending_tag and pending_parts:
+            output.append(f"<{pending_tag}>{' '.join(pending_parts)}</{pending_tag}>")
+        pending_tag = None
+        pending_parts = []
+
+    for match in heading_block_pattern.finditer(html):
+        interstitial = html[cursor : match.start()]
+        heading = classify_heading_block(match)
+
+        if heading is None:
+            flush_pending()
+            output.append(interstitial)
+            output.append(match.group(0))
+            cursor = match.end()
+            continue
+
+        heading_tag, heading_text = heading
+        if pending_tag:
+            if interstitial.strip() == "" and heading_tag == pending_tag:
+                if heading_text:
+                    pending_parts.append(heading_text)
+                cursor = match.end()
+                continue
+
+            flush_pending()
+            output.append(interstitial)
+        else:
+            output.append(interstitial)
+
+        if heading_text:
+            pending_tag = heading_tag
+            pending_parts = [heading_text]
+
+        cursor = match.end()
+
+    flush_pending()
+    output.append(html[cursor:])
+    return "".join(output)
+
+
+def normalize_unordered_list_indentation(markdown):
+    """Undo html2text's extra indent on unordered list items.
+
+    The html2text version used here emits unordered list bullets one level too
+    deep for Notes-style list HTML after the first item. Remove a single
+    indentation level while leaving ordered lists and non-list lines untouched.
+    """
+
+    normalized_lines = []
+    for line in markdown.splitlines():
+        if re.match(r"^  +[*+-]\s", line):
+            normalized_lines.append(line[2:])
+        else:
+            normalized_lines.append(line)
+
+    return "\n".join(normalized_lines)
 
 
 def md_converter(id_search_result):
@@ -94,4 +142,5 @@ def md_converter(id_search_result):
     text_maker.images_to_alt = True
     text_maker.body_width = 0
     original_md = text_maker.handle(cleaned_html).strip()
+    original_md = normalize_unordered_list_indentation(original_md)
     return [original_md, original_html, image_map]
