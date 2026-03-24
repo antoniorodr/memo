@@ -12,13 +12,16 @@ def _build_tree(folders_with_parents):
     return children
 
 
-def _render_tree(children, parent="", indent=0):
+def _render_tree(children, parent="", indent=0, visited=None):
     """Render the folder tree as indented text."""
+    if visited is None:
+        visited = set()
     lines = []
     for name in children.get(parent, []):
         lines.append(" " * indent + name)
-        if name in children:
-            lines.extend(_render_tree(children, name, indent + 2))
+        if name in children and name not in visited:
+            visited.add(name)
+            lines.extend(_render_tree(children, name, indent + 2, visited))
     return lines
 
 
