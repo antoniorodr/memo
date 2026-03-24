@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.2] - 24.03.2026
+
+### Fixed
+
+- Fixed the `RecursionError` bug when iterating over all the notes. Thanks to @MehrabMirzaei for the fix!
+
 ## [0.5.1] - 07.03.2026
 
 ### Added
@@ -169,6 +175,7 @@ Initial release with core Apple Notes functionality:
 - Move notes between folders
 - List all folders and subfolders
 
+[0.5.2]: https://github.com/antoniorodr/memo/releases/tag/v0.5.1
 [0.5.1]: https://github.com/antoniorodr/memo/releases/tag/v0.5.1
 [0.5.0]: https://github.com/antoniorodr/memo/releases/tag/v0.5.0
 [0.4.0]: https://github.com/antoniorodr/memo/releases/tag/v0.4.0
