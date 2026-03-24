@@ -34,10 +34,61 @@ def restore_images(html, image_map):
     return html
 
 
+def normalize_notes_heading_blocks(html):
+    """Promote Apple Notes heading-like blocks into semantic headings.
+
+    Apple Notes may export headings as styled <div><b>...</b></div> blocks rather
+    than <h1>/<h2>/<h3>. Convert only the narrow patterns we understand before
+    handing HTML to html2text.
+    """
+
+    heading_patterns = (
+        (
+            re.compile(
+                r"<div>\s*<b>\s*<span[^>]*style=\"[^\"]*font-size:\s*24px[^\"]*\"[^>]*>"
+                r"\s*(.*?)\s*</span>\s*</b>\s*</div>",
+                re.IGNORECASE | re.DOTALL,
+            ),
+            "h1",
+        ),
+        (
+            re.compile(
+                r"<div>\s*<b>\s*<span[^>]*style=\"[^\"]*font-size:\s*18px[^\"]*\"[^>]*>"
+                r"\s*(.*?)\s*</span>\s*</b>\s*</div>",
+                re.IGNORECASE | re.DOTALL,
+            ),
+            "h2",
+        ),
+    )
+
+    normalized_html = html
+    for pattern, heading_tag in heading_patterns:
+        normalized_html = pattern.sub(
+            lambda match: f"<{heading_tag}>{match.group(1).strip()}</{heading_tag}>",
+            normalized_html,
+        )
+
+    h3_pattern = re.compile(
+        r"<div>\s*<b>\s*([^<]+?)\s*</b>\s*</div>",
+        re.IGNORECASE | re.DOTALL,
+    )
+
+    def replace_h3(match):
+        text = match.group(1).strip()
+        if re.search(r"[.!?]", text):
+            return match.group(0)
+        return f"<h3>{text}</h3>"
+
+    normalized_html = h3_pattern.sub(replace_h3, normalized_html)
+
+    return normalized_html
+
+
 def md_converter(id_search_result):
     original_html = id_search_result.stdout.strip()
 
     cleaned_html, image_map = extract_images(original_html)
+    cleaned_html = normalize_notes_heading_blocks(cleaned_html)
 
     text_maker = html2text.HTML2Text()
     text_maker.images_to_alt = True
