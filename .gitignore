@@ -174,3 +174,6 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+
+# Private test fixtures (contain real call recording data)
+tests/fixtures/*.bin

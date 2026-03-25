@@ -33,8 +33,7 @@ def test_recordings_view(mock_get_recordings, mock_transcript):
     mock_get_recordings.return_value = (FAKE_RECORDING_MAP, FAKE_RECORDINGS_LIST)
     mock_transcript.return_value = (
         "# Call with John\n\nHello, this is a test transcript.",
-        "<div>Call with John</div>",
-        {},
+        "Call with John",
     )
     runner = CliRunner()
     result = runner.invoke(cli, ["recordings", "--view", "1"])

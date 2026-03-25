@@ -332,10 +332,20 @@ def recordings(view, extract, output, search):
         note_id = recording_map[view][0]
         transcript = get_recording_transcript(note_id)
         if transcript is None:
-            click.secho(f"\nFailed to fetch transcript for recording {view}.", fg="red")
+            click.secho(
+                f"\nTranscript for recording {view} is not accessible.",
+                fg="yellow",
+            )
+            click.echo(
+                "Apple stores transcripts in a private database that requires "
+                "Full Disk Access."
+            )
+            click.echo(
+                "Grant FDA to your terminal app in: System Settings → "
+                "Privacy & Security → Full Disk Access"
+            )
             return
-        markdown_content = transcript[0]
-        click.echo(f"\n{markdown_content}")
+        click.echo(f"\n{transcript[0]}")
         return
 
     if extract is not None:
