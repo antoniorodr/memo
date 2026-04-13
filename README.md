@@ -1,182 +1,103 @@
-<div align="center" id="top">
-  <img height=100px src="./.github/Memo.png" alt="memo" />
+<a id="memo"></a>
 
-&#xa0;
+![memo](./.github/Memo.png)
 
-  <!-- <a href="https://memo.netlify.app">Demo</a> -->
-</div>
+> [!caution]
+> **Status:** Under development
 
-<p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/antoniorodr/memo?color=56BEB8">
+## ℹ️ About
 
-  <img alt="Github language count" src="https://img.shields.io/github/languages/count/antoniorodr/memo?color=56BEB8">
+**Memo** is a Python CLI for managing Apple Notes and Apple Reminders from the terminal. It is built for a keyboard-driven workflow, so you can browse, read, edit, move, export, and complete items without leaving your shell.
 
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/antoniorodr/memo?color=56BEB8">
+Memo is also used by [OpenClaw](https://github.com/openclaw/openclaw/blob/main/skills/apple-notes/SKILL.md).
 
-  <img alt="Github issues" src="https://img.shields.io/github/issues/antoniorodr/memo?color=56BEB8" />
+Full documentation is available at [antoniorodr.github.io/memo](https://antoniorodr.github.io/memo).
 
-  <img alt="Github forks" src="https://img.shields.io/github/forks/antoniorodr/memo?color=56BEB8" />
+## 🎬 Demo
 
-  <img alt="Github stars" src="https://img.shields.io/github/stars/antoniorodr/memo?color=56BEB8" />
+![Memo demo](./.github/memo.gif)
 
-</p>
+## ✨ Features
 
- <h4 align="center">
- 🚧  memo 🚀 Under development...  🚧
-</h4>
+- View notes and reminders directly from the terminal
+- Read note content as clean Markdown
+- Add and edit notes without leaving your editor
+- Move notes between folders and browse subfolders
+- Search notes with fuzzy matching
+- Mark reminders as completed from the CLI
+- Export notes to HTML and convert them to Markdown
 
-<hr>
+## 🛠️ Technologies
 
-<p align="center">
-  <a href="#dart-about">About</a> &#xa0; | &#xa0;
-  <a href="#computer-demo">Demo</a> &#xa0; | &#xa0;
-  <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
-  <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
-  <a href="#checkered_flag-installation">Installation</a> &#xa0; | &#xa0;
-  <a href="#bookmark_tabs-documentation">Documentation</a> &#xa0; | &#xa0;
-  <a href="#pushpin-roadmap">Roadmap</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a>
-</p>
+The project is built with:
 
-<br>
-
-## :dart: About
-
-**Memo** is a simple command-line interface (CLI) tool for managing your Apple Notes and Apple Reminders. It’s written in Python and aims to offer a fast, keyboard-driven way to create, search, and organize notes and reminders straight from your terminal.
-
-**Memo** is used by [OpenClaw](https://github.com/openclaw/openclaw/blob/main/skills/apple-notes/SKILL.md).
-
-## :computer: Demo
-
-<div align="center" id="top">
-  <img src="./.github/memo.gif" alt="memo" />
-
-&#xa0;
-
-  <!-- <a href="https://memo.netlify.app">Demo</a> -->
-</div>
-
-## :sparkles: Features
-
-:heavy_check_mark: View your notes and reminders directly from the terminal\
-:heavy_check_mark: Read the full content of a note as clean Markdown from the terminal\
-:heavy_check_mark: Edit your notes and reminders right from the terminal\
-:heavy_check_mark: Add new notes and reminders effortlessly through the terminal\
-:heavy_check_mark: Move notes to another folder effortlessly through the terminal\
-:heavy_check_mark: Mark reminders as completed from the terminal\
-:heavy_check_mark: Export your notes to HTML and convert them to Markdown
-
-## :rocket: Technologies
-
-The following tools were used in this project:
-
+- [Python](https://www.python.org/)
 - [Click](https://click.palletsprojects.com/en/stable/)
 - [Mistune](https://mistune.lepture.com/en/latest/)
 - [html2text](https://pypi.org/project/html2text/)
+- [chardet](https://pypi.org/project/chardet/)
 
-## :checkered_flag: Installation
+## 📋 Requirements
 
-#### Manual Installation
+Before starting, make sure the required tools and dependencies are installed on your machine:
+
+```bash
+python3.13 --version
+echo $EDITOR
+```
+
+Memo depends on Apple Notes, Apple Reminders, and AppleScript, so it is intended for macOS. For manual and `uv` installs, Python 3.13 or newer is required.
+
+If you want to add or edit notes from the CLI, set `$EDITOR` to your preferred terminal editor.
+
+## 📦 Installation
+
+### Manual installation
 
 ```bash
 git clone https://github.com/antoniorodr/memo
-
 cd memo
-
 pip install .
 ```
 
-#### Homebrew Installation
+### Homebrew installation
 
 ```bash
 brew tap antoniorodr/memo
 brew install antoniorodr/memo/memo
 ```
 
-## :bookmark_tabs: Documentation
-
-:heavy_check_mark: **Image support:** When editing notes with images, inline images are preserved through the edit cycle. Images appear as `[MEMO_IMG_N]` placeholders in your editor — keep them to preserve images, or remove them to delete images.
-
-:warning: Due to AppleScript limitations, the images will be preserved at the end of the note, regardless of where the placeholder is located in the text. This means that if you have images in your note, they will be moved to the end of the note after editing.
-
-To read the full documentation, please visit the [docs](https://antoniorodr.github.io/memo)
-
-Use the command `memo notes --help` to see all the options available for notes.
+### Installation with [uv](https://docs.astral.sh/uv/)
 
 ```bash
-memo notes --help
-Usage: memo notes [OPTIONS]
-
-Options:
-  -f, --folder TEXT  Specify a folder to filter the notes (leave empty to get
-                     all).
-  -a, --add          Add a note to the specified folder. Specify a folder
-                     using the --folder flag.
-  -e, --edit         Edit a note in the specified folder. Specify a folder
-                     using the --folder flag.
-  -d, --delete       Delete a note in the specified folder. Specify a folder
-                     using the --folder flag.
-  -m, --move         Move a note to a different folder.
-  -fl, --flist       List all the folders and subfolders.
-  -s, --search       Fuzzy search your notes.
-  -r, --remove       Remove the folder you specified.
-  -ex, --export      Export your notes to the Desktop.
-  -v, --view INTEGER Display the content of note N from the list.
-  --help             Show this message and exit.
+uv tool install git+https://github.com/antoniorodr/memo
 ```
 
-Use the command `memo rem --help` to see all the options available for reminders.
+## 🚀 Getting Started
 
-```bash
-memo rem --help
-Usage: memo rem [OPTIONS]
-
-Options:
-  -c, --complete  Mark a reminder as completed.
-  -a, --add       Add a new reminder.
-  -d, --delete    Delete a reminder.
-  --help          Show this message and exit.
-```
-
-You can use `memo --help` to see the available commands.
-
-```bash
-memo --help
-Usage: memo [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
-
-Commands:
-  notes
-  rem
-```
-
-Memo uses `$EDITOR` to edit and add notes. You can set it up by running the following command:
+Once installed, set your editor and inspect the available commands:
 
 ```bash
 export EDITOR="vim"
+memo --help
+memo notes --help
+memo rem --help
 ```
 
-Where `vim` can be replaced with your preferred editor. Add it to your .zshrc/.bashrc to make it permanent.
+Use `memo notes` to work with Apple Notes and `memo rem` to manage Apple Reminders from the terminal.
 
-Or check the one you have set up in your terminal by running:
+> [!NOTE]
+> When editing notes with images, Memo preserves them by inserting `[MEMO_IMG_N]` placeholders into the text shown in your editor. Keep a placeholder to preserve the corresponding image, or remove it to delete that image.
 
-```bash
-echo $EDITOR
-```
+> [!IMPORTANT]
+> Because of AppleScript limitations, preserved images are appended to the end of the note after editing, even if their placeholders appear elsewhere in the text.
 
-## :memo: License
+For full usage details and examples, see the [documentation site](https://antoniorodr.github.io/memo).
 
-This project is under license from Apache 2.0. For more details, see the [LICENSE](LICENSE.md) file.
+## ❤️ Do you like my work?
 
-## :eyes: Do you like my work?
-
-If you like my work and want to support me, you can buy me a coffee ☕ or even a burrito 🌯 by sponsoring me.
+If you find the project useful, you can support the author here:
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor_on_GitHub-30363D?logo=github&style=for-the-badge)](https://github.com/sponsors/antoniorodr)
 
-&#xa0;
-
-<a href="#top">Back to top</a>
+[Back to top](#memo)
