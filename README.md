@@ -1,6 +1,4 @@
-<a id="memo"></a>
-
-![memo](./.github/Memo.png)
+# `memo`
 
 > [!caution]
 > **Status:** Under development
