@@ -10,7 +10,7 @@ authors = [
 version = "0.5.2"
 description = "CLI app to manage your Apple Notes and Apple reminders"
 readme = "README.md"
-license = "MIT"
+license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
 dependencies = [
   "chardet>=5.2.0",
