@@ -174,3 +174,5 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+# script
+update_dependencies.py
