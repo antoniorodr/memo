@@ -17,7 +17,7 @@ dependencies = [
     "click>=8.3.2",
     "html2text>=2025.4.15",
     "mistune>=3.2.0",
-    "urllib3>=2.6.3",
+    "urllib3>=2.7.0",
 ]
 
 [project.urls]
