@@ -5,16 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.3] - 2026-04-19
+## [0.6.0] - 24.05.2026
+
+### Added
+- Add explanation to use the `--folder` flag with `--export`
+- Add posibility to export notes from a folder using `--folder` flag
+- Add possibility to fetch notes from a especified folder
+
+### Changed
+- Update version
+- Merge pull request #43 from antoniorodr/dependabot/uv/mistune-3.2.1 by @antoniorodr in [#43](https://github.com/antoniorodr/memo/pull/43)
+- Bump mistune from 3.2.0 to 3.2.1 by @dependabot[bot]
+- Merge pull request #42 from antoniorodr/dependabot/uv/urllib3-2.7.0 by @antoniorodr in [#42](https://github.com/antoniorodr/memo/pull/42)
+- Bump urllib3 from 2.6.3 to 2.7.0 by @dependabot[bot]
+- Update feil mirror workflow by @antoniorodr
+- Update docs and mirror workflows by @antoniorodr
+- Update tests workflow by @antoniorodr
+- Update cliff config by @antoniorodr
+- Update release and tests workflows by @antoniorodr
+- Update changelog using git-cliff by @antoniorodr
+
+## [0.5.3] - 19.04.2026
 
 ### Added
 - Add stale workflow by @antoniorodr
 
 ### Changed
-- Merge branch 'chore/update-dependencies'
-- Update dependencies to the last version
-- Create git-cliff config
-- Update release workflow to use git-cliff
+- Merge branch 'chore/update-dependencies' by @antoniorodr
+- Update dependencies to the last version by @antoniorodr
+- Create git-cliff config by @antoniorodr
+- Update release workflow to use git-cliff by @antoniorodr
 - Delete logo from readme by @antoniorodr
 - Delete back to top from readme by @antoniorodr
 - Update logo size by @antoniorodr
@@ -30,12 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump pygments from 2.19.2 to 2.20.0 by @dependabot[bot]
 
 ### Removed
-- Delete white spaces
+- Delete white spaces by @antoniorodr
 
 ### New Contributors
 * @dependabot[bot] made their first contribution
 
-## [0.5.2] - 2026-03-24
+## [0.5.2] - 24.03.2026
 
 ### Added
 - Add cycle detection to _render_tree to prevent RecursionError by @MehrabMirzaei
@@ -52,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @MehrabMirzaei made their first contribution
 
-## [0.5.1] - 2026-03-07
+## [0.5.1] - 07.03.2026
 
 ### Added
 - Add use of clear_cache and new flag by @antoniorodr
@@ -66,7 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create cache_memo for caching of notes by @antoniorodr
 - Change from mkdocs material to zensical by @antoniorodr
 
-## [0.5.0] - 2026-03-02
+## [0.5.0] - 02.03.2026
 
 ### Added
 - Add a warning before selecting the note to edit by @antoniorodr
@@ -93,7 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @Starefossen made their first contribution in [#24](https://github.com/antoniorodr/memo/pull/24)
 
-## [0.4.0] - 2026-02-18
+## [0.4.0] - 18.02.2026
 
 ### Added
 - Add --view/-v flag to read note content
@@ -114,13 +134,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @ made their first contribution
 
-## [0.3.6] - 2026-02-11
+## [0.3.6] - 11.02.2026
 
 ### Changed
 - Merge pull request #15 from antoniorodr/fix/hardcoded-title by @antoniorodr in [#15](https://github.com/antoniorodr/memo/pull/15)
 - Fixed hardcoded note title when creating a new one by @antoniorodr
 
-## [0.3.5] - 2026-02-10
+## [0.3.5] - 10.02.2026
 
 ### Changed
 - Merge pull request #13 from antoniorodr/release/v0.3.5 by @antoniorodr in [#13](https://github.com/antoniorodr/memo/pull/13)
@@ -132,21 +152,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @sajal2692 made their first contribution
 
-## [0.3.4] - 2026-02-10
+## [0.3.4] - 10.02.2026
 
 ### Changed
 - Update pyproject and mkdocs by @antoniorodr
 - Update Changelog by @antoniorodr
 - Update the export flag to add the possibility to export the notes to a custom folder by @antoniorodr
 
-## [0.3.3] - 2026-01-22
+## [0.3.3] - 22.01.2026
 
 ### Changed
 - Fix a bug that caosed memo to crash when searching notes by @antoniorodr
 - Update urllib3 dependency by @antoniorodr
 - Update changelog and pyproject by @antoniorodr
 
-## [0.3.2] - 2026-01-16
+## [0.3.2] - 16.01.2026
 
 ### Added
 - Add sponsorship badge and update readme by @antoniorodr
@@ -160,12 +180,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release v0.3.1 by @antoniorodr
 - Update readme by @antoniorodr
 
-## [0.2.2] - 2025-04-14
+## [0.2.2] - 14.04.2025
 
 ### Added
 - Add support to edit reminders by @antoniorodr
 
-## [0.2.1] - 2025-04-11
+## [0.2.1] - 11.04.2025
 
 ### Added
 - Add support to remove folders from Apple Notes by @antoniorodr
@@ -175,7 +195,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update readme, add changelog, contributing and code of conduct by @antoniorodr
 
-## [0.1.1] - 2025-04-07
+## [0.1.1] - 07.04.2025
 
 ### Added
 - Add new tests by @antoniorodr
@@ -188,7 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update readme with warning for notes with images/att by @antoniorodr
 - Update readme with demo by @antoniorodr
 
-## [0.1.0] - 2025-04-06
+## [0.1.0] - 06.04.2025
 
 ### Changed
 - Update pyproject.toml by @antoniorodr
@@ -203,6 +223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[0.6.0]: https://github.com/antoniorodr/memo/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/antoniorodr/memo/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/antoniorodr/memo/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/antoniorodr/memo/compare/v0.5.0...v0.5.1
