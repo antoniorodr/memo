@@ -5,7 +5,24 @@ import html2text
 import chardet
 
 
-def export_memo(path: str):
+def export_memo(path: str, notes_folder: str | None = None):
+    if notes_folder:
+        folder_filter = f"""
+        set targetFolder to missing value
+        repeat with f in folders of default account
+            if name of f is "{notes_folder}" then
+                set targetFolder to f
+                exit repeat
+            end if
+        end repeat
+        if targetFolder is missing value then
+            error "Folder '{notes_folder}' not found"
+        end if
+        set notesToExport to notes of targetFolder
+        """
+    else:
+        folder_filter = "set notesToExport to notes of default account\n"
+
     script = f"""
     set exportFolder to "{path}"
     do shell script "mkdir -p " & quoted form of exportFolder
@@ -30,7 +47,8 @@ def export_memo(path: str):
     end cleanFileName
 
     tell application "Notes"
-        repeat with theNote in notes of default account
+        {folder_filter}
+        repeat with theNote in notesToExport
             set noteLocked to password protected of theNote as boolean
             if not noteLocked then
                 set noteName to name of theNote as string
