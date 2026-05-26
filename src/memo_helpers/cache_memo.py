@@ -5,12 +5,14 @@ import time
 CACHE_DIR = os.path.expanduser("~/.cache/memo")
 CACHE_FILE = os.path.join(CACHE_DIR, "notes_cache.json")
 DEFAULT_TTL = 300  # 5 minutes
+CACHE_VERSION = 2
 
 
 def save_cache(note_map, notes_list):
     os.makedirs(CACHE_DIR, exist_ok=True)
     serializable_map = {str(k): list(v) for k, v in note_map.items()}
     data = {
+        "version": CACHE_VERSION,
         "timestamp": time.time(),
         "note_map": serializable_map,
         "notes_list": notes_list,
@@ -26,6 +28,8 @@ def load_cache(ttl=DEFAULT_TTL):
         with open(CACHE_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, KeyError):
+        return None
+    if data.get("version") != CACHE_VERSION:
         return None
     if time.time() - data["timestamp"] > ttl:
         return None

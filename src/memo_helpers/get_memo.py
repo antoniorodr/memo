@@ -2,6 +2,7 @@ import subprocess
 import click
 import datetime
 from memo_helpers.cache_memo import save_cache, load_cache
+from memo_helpers.folder_memo import folder_path_handler_script
 
 
 def get_note():
@@ -9,20 +10,23 @@ def get_note():
     if cached:
         return list(cached)
 
-    script = """
+    script = (
+        folder_path_handler_script()
+        + """
     set deletedTranslations to {"Recently Deleted", "Nylig slettet", "Senast raderade", "Senest slettet", "Zuletzt gelöscht", "Supprimés récemment", "Eliminados recientemente", "Eliminati di recente", "Recent verwijderd", "Ostatnio usunięte", "Недавно удалённые", "Apagados recentemente", "Apagadas recentemente", "最近删除", "最近刪除", "最近削除した項目", "최근 삭제된 항목", "Son Silinenler", "Äskettäin poistetut", "Nedávno smazané", "Πρόσφατα διαγραμμένα", "Nemrég töröltek", "Șterse recent", "Nedávno vymazané", "เพิ่งลบ", "Đã xóa gần đây", "Нещодавно видалені"}
 
     tell application "Notes"
         set notesList to {}
-        repeat with eachFolder in folders
+        repeat with eachFolder in every folder
             set folderName to name of eachFolder
+            set folderPathName to my folderPath(id of eachFolder)
             if folderName is not in deletedTranslations then
                 set folderNotes to notes of eachFolder
                 if (count of folderNotes) > 0 then
                     set noteIDs to id of every note of eachFolder
                     set noteNames to name of every note of eachFolder
                     repeat with i from 1 to count of noteIDs
-                        set end of notesList to (item i of noteIDs) & "|" & folderName & " - " & (item i of noteNames)
+                        set end of notesList to (item i of noteIDs) & "|" & folderPathName & " - " & (item i of noteNames)
                     end repeat
                 end if
             end if
@@ -33,6 +37,7 @@ def get_note():
         return output
     end tell
     """
+    )
 
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     notes_list = [

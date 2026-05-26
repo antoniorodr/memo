@@ -19,6 +19,11 @@ from memo_helpers.cache_memo import clear_cache
 from memo_helpers.export_memo import export_memo
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
+from memo_helpers.folder_memo import (
+    folder_paths_from_tree,
+    note_belongs_to_folder,
+    resolve_folder_path,
+)
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -124,10 +129,19 @@ def notes(
     notes_info = get_note()
     note_map = notes_info[0]
     notes_list = notes_info[1]
-    notes_list_filter = [
-        note for note in enumerate(notes_list, start=1) if folder in note[1]
-    ]
     folders = notes_folders()
+    folder_paths = folder_paths_from_tree(folders)
+    resolved_folder = resolve_folder_path(folder, folder_paths) if folder else ""
+    notes_list_filter = [
+        note
+        for note in enumerate(notes_list, start=1)
+        if note_belongs_to_folder(note[1], resolved_folder)
+    ]
+
+    if folder and not resolved_folder and not flist and not search and not remove:
+        click.echo("\nThe folder does not exists.")
+        click.echo("\nUse 'memo notes -fl' to see your folders")
+        return
 
     if view is not None:
         if view not in note_map:
@@ -144,13 +158,14 @@ def notes(
 
     if not flist and not search and not remove and not export:
         click.secho("\nFetching notes...", fg="yellow")
-        if folder not in folders:
-            click.echo("\nThe folder does not exists.")
-            click.echo("\nUse 'memo notes -fl' to see your folders")
-        elif not notes_list_filter:
+        if not notes_list_filter:
             click.echo("\nNo notes found.")
         else:
-            title = f"Your Notes in folder {folder}:" if folder else "All your notes:"
+            title = (
+                f"Your Notes in folder {resolved_folder}:"
+                if resolved_folder
+                else "All your notes:"
+            )
             click.echo(f"\n{title}\n")
             for note in notes_list_filter:
                 click.echo(f"{note[0]}. {note[1]}")
@@ -160,7 +175,7 @@ def notes(
         edit_note(note_id)
         clear_cache()
     if add:
-        add_note(folder)
+        add_note(resolved_folder)
         clear_cache()
     if move:
         note_id = pick_note(note_map, notes_list_filter, "move")
@@ -196,11 +211,11 @@ def notes(
     if export:
         confirmation_message = "\nAre you sure you want to export your notes to HTML?"
         default_path = os.path.expanduser("~/Desktop/notes/")
-        if folder:
-            confirmation_message = f"\nAre you sure you want to export your notes in the folder '{folder}' to HTML?"
+        if resolved_folder:
+            confirmation_message = f"\nAre you sure you want to export your notes in the folder '{resolved_folder}' to HTML?"
             if click.confirm(confirmation_message):
                 export_path_str = export_path(default_path)
-                export_memo(export_path_str, folder)
+                export_memo(export_path_str, resolved_folder)
         else:
             if click.confirm(confirmation_message):
                 export_path_str = export_path(default_path)

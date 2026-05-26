@@ -4,6 +4,7 @@ import tempfile
 import mistune
 import os
 from datetime import datetime
+from memo_helpers.folder_memo import folder_lookup_script
 
 
 def add_note(folder_name):
@@ -26,7 +27,7 @@ def add_note(folder_name):
 
     script = f"""
         tell application "Notes"
-            set targetFolder to first folder whose name is "{folder_name}"
+            {folder_lookup_script(folder_name)}
             tell targetFolder
                 make new note with properties {{body:"{note_html}"}}
             end tell

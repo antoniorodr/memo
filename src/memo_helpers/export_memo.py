@@ -3,21 +3,13 @@ import os
 import click
 import html2text
 import chardet
+from memo_helpers.folder_memo import folder_lookup_script
 
 
 def export_memo(path: str, notes_folder: str | None = None):
     if notes_folder:
         folder_filter = f"""
-        set targetFolder to missing value
-        repeat with f in folders of default account
-            if name of f is "{notes_folder}" then
-                set targetFolder to f
-                exit repeat
-            end if
-        end repeat
-        if targetFolder is missing value then
-            error "Folder '{notes_folder}' not found"
-        end if
+        {folder_lookup_script(notes_folder)}
         set notesToExport to notes of targetFolder
         """
     else:
