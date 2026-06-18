@@ -122,18 +122,26 @@ def notes(
     if no_cache:
         clear_cache()
     notes_info = get_note()
-    note_map = notes_info[0]
+    global_note_map = notes_info[0]
     notes_list = notes_info[1]
-    notes_list_filter = [
-        note for note in enumerate(notes_list, start=1) if folder in note[1]
-    ]
     folders = notes_folders()
 
+    # Build a local-indexed filtered view of the notes so the numbers shown to the
+    # user always match what pick_note expects. ``local_note_map`` keys are the
+    # 1-based local indices users see, and values carry the underlying note id.
+    filtered_notes = [(global_key, global_note_map[global_key][1])
+                      for global_key in sorted(global_note_map)
+                      if folder in global_note_map[global_key][1]]
+    notes_list_filter = [(local_idx, title)
+                         for local_idx, (_, title) in enumerate(filtered_notes, start=1)]
+    local_note_map = {local_idx: (global_note_map[global_key][0], title)
+                      for local_idx, (global_key, title) in enumerate(filtered_notes, start=1)}
+
     if view is not None:
-        if view not in note_map:
+        if view not in global_note_map:
             click.secho(f"\nNote {view} not found.", fg="red")
             return
-        note_id = note_map[view][0]
+        note_id = global_note_map[view][0]
         result = id_search_memo(note_id)
         if result.returncode != 0:
             click.secho(f"\nFailed to fetch note {view}.", fg="red")
@@ -156,14 +164,17 @@ def notes(
                 click.echo(f"{note[0]}. {note[1]}")
 
     if edit:
-        note_id = pick_note(note_map, notes_list_filter, "edit")
+        note_id = pick_note(local_note_map, notes_list_filter, "edit")
+        if note_id is None:
+            click.echo("Invalid selection.")
+            return
         edit_note(note_id)
         clear_cache()
     if add:
         add_note(folder)
         clear_cache()
     if move:
-        note_id = pick_note(note_map, notes_list_filter, "move")
+        note_id = pick_note(local_note_map, notes_list_filter, "move")
         if note_id is None:
             click.echo("Invalid selection.")
             return
@@ -173,7 +184,10 @@ def notes(
         move_note(note_id, target_folder)
         clear_cache()
     if delete:
-        note_id = pick_note(note_map, notes_list_filter, "delete")
+        note_id = pick_note(local_note_map, notes_list_filter, "delete")
+        if note_id is None:
+            click.echo("Invalid selection.")
+            return
         delete_note(note_id)
         clear_cache()
     if flist:

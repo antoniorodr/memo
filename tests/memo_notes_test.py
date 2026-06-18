@@ -132,3 +132,46 @@ def test_notes_view_combined_with_edit():
     result = runner.invoke(cli, ["notes", "--view", "1", "--edit"])
     assert result.exit_code == 2
     assert "Only one of" in result.output
+
+
+# Regression test for issue #48: `memo notes -e --folder <folder>` showed
+# 1-based offsets into the unfiltered notes list as the selection number, but
+# `pick_note` was passing that number to `note_map.get(choice)` (the global
+# note map). When the user selected a note whose global key was outside the
+# filtered range, or whose local index differed from the global key, this
+# raised IndexError or picked the wrong note. After the fix, the displayed
+# numbers are sequential local indices and the correct note is selected.
+
+@patch("memo.memo.edit_note")
+@patch("memo.memo.notes_folders")
+@patch("memo.memo.get_note")
+def test_notes_edit_with_folder_uses_local_index(
+    mock_get_note, mock_notes_folders, mock_edit
+):
+    # 5 notes, only notes 2 and 4 are in ExampleFolder. The bug would cause
+    # picking local #2 to either fail or select the wrong note because the
+    # global note_map key for "ExampleFolder - Note 2" is also 2 — but with
+    # notes_list containing non-folder entries, the displayed numbers (1, 2)
+    # no longer line up with global note_map keys for all configurations.
+    note_map = {
+        1: ("id-1", "Other - Note 1"),
+        2: ("id-2", "ExampleFolder - Note 2"),
+        3: ("id-3", "Other - Note 3"),
+        4: ("id-4", "ExampleFolder - Note 4"),
+        5: ("id-5", "Other - Note 5"),
+    }
+    notes_list = [note_map[k][1] for k in note_map]
+    mock_get_note.return_value = [note_map, notes_list]
+    mock_notes_folders.return_value = "ExampleFolder"
+    mock_edit.return_value = None
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["notes", "--folder", "ExampleFolder", "--edit"], input="2\n"
+    )
+    assert result.exit_code == 0, result.output
+    # "2" should select the second note in the filtered list, which is
+    # global key 4 ("ExampleFolder - Note 4") with id "id-4".
+    mock_edit.assert_called_once_with("id-4")
+    # The displayed list should show local indices, not global keys.
+    assert "1. ExampleFolder - Note 2" in result.output
+    assert "2. ExampleFolder - Note 4" in result.output
