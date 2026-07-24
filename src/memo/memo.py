@@ -177,7 +177,7 @@ def notes(
         delete_note(note_id)
         clear_cache()
     if flist:
-        click.echo("\nFolders and subfolders in Notes:")
+        click.echo("\nNotes folder structure:")
         click.echo(f"\n{folders}")
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
