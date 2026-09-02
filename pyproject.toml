@@ -16,7 +16,7 @@ dependencies = [
   "chardet>=7.4.3",
   "click>=8.3.2",
   "html2text>=2025.4.15",
-  "mistune>=3.3.0",
+  "mistune>=3.3.3",
   "urllib3>=2.7.0",
 ]
 
