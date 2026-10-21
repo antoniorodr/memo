@@ -5,12 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 21.10.2026
+
+### Changed
+- Bump version to 0.6.2
+- Reorder imports
+- Merge pull request #54 from antoniorodr/dependabot/uv/mistune-3.3.3 by @antoniorodr in [#54](https://github.com/antoniorodr/memo/pull/54)
+- Bump mistune from 3.3.0 to 3.3.3 by @dependabot[bot]
+- Merge pull request #53 from antoniorodr/dependabot/uv/pymdown-extensions-11.0.1 by @antoniorodr in [#53](https://github.com/antoniorodr/memo/pull/53)
+- Bump pymdown-extensions from 11.0 to 11.0.1 by @dependabot[bot]
+- Merge pull request #51 from antoniorodr/dependabot/uv/pymdown-extensions-11.0 by @antoniorodr in [#51](https://github.com/antoniorodr/memo/pull/51)
+- Bump pymdown-extensions from 10.21.3 to 11.0 by @dependabot[bot]
+- Update changelog by @antoniorodr
+
+### Fixed
+- Fix escaping problems
+
 ## [0.6.1] - 24.07.2026
 
 ### Changed
-- Bump version to 0.6.1
-- Change the folder structure "title"
-- Improve error handling
+- Bump version to 0.6.1 by @antoniorodr
+- Change the folder structure "title" by @antoniorodr
+- Improve error handling by @antoniorodr
 - Merge pull request #50 from antoniorodr/dependabot/uv/mistune-3.3.0 by @antoniorodr in [#50](https://github.com/antoniorodr/memo/pull/50)
 - Bump mistune from 3.2.1 to 3.3.0 by @dependabot[bot]
 - Merge pull request #46 from antoniorodr/dependabot/uv/pymdown-extensions-10.21.3 by @antoniorodr in [#46](https://github.com/antoniorodr/memo/pull/46)
@@ -18,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog by @antoniorodr
 
 ### Fixed
-- Fix assert string
+- Fix assert string by @antoniorodr
 
 ## [0.6.0] - 24.05.2026
 
@@ -238,6 +254,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[0.6.2]: https://github.com/antoniorodr/memo/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/antoniorodr/memo/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/antoniorodr/memo/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/antoniorodr/memo/compare/v0.5.2...v0.5.3
