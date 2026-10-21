@@ -1,11 +1,17 @@
-import click
 import subprocess
+
+import click
+
+from memo_helpers.validation_memo import applescript_escape
 
 
 def delete_note(note_id):
+
+    escaped_note_id = applescript_escape(note_id)
+
     script = f'''
     tell application "Notes"
-        set theNote to first note whose id is "{note_id}"
+        set theNote to first note whose id is "{escaped_note_id}"
         delete theNote
     end tell
     '''
@@ -19,12 +25,16 @@ def delete_note(note_id):
 
 
 def delete_note_folder(folder_name):
+
+    escaped_folder_name = applescript_escape(folder_name)
+
     script = f'''
     tell application "Notes"
-        set selectedFolder to first folder whose name is "{folder_name}"
+        set selectedFolder to first folder whose name is "{escaped_folder_name}"
         delete selectedFolder
     end tell
     '''
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
 
     if result.returncode == 0:
@@ -34,9 +44,11 @@ def delete_note_folder(folder_name):
 
 
 def complete_reminder(reminder_id):
+
+    escaped_reminder_id = applescript_escape(reminder_id)
     script = f'''
         tell application "Reminders"
-            set selectedRem to first reminder whose id is "{reminder_id}"
+            set selectedRem to first reminder whose id is "{escaped_reminder_id}"
             set completed of selectedRem to true
         end tell
         '''
@@ -50,12 +62,16 @@ def complete_reminder(reminder_id):
 
 
 def delete_reminder(reminder_id):
+
+    escaped_reminder_id = applescript_escape(reminder_id)
+
     script = f'''
         tell application "Reminders"
-        set selectedRem to first reminder whose id is "{reminder_id}"
+        set selectedRem to first reminder whose id is "{escaped_reminder_id}"
         delete selectedRem
     end tell
     '''
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
 
     if result.returncode == 0:

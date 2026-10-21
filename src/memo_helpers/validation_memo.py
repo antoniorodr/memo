@@ -1,6 +1,11 @@
 import click
 
 
+def applescript_escape(value: str) -> str:
+    """Escape a string for safe interpolation into an AppleScript string literal."""
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
 def selection_notes_validation(
     folder, edit, delete, move, add, flist, search, remove, export, view
 ):

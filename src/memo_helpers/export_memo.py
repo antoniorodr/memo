@@ -1,30 +1,38 @@
-import subprocess
 import os
+import subprocess
+
+import chardet
 import click
 import html2text
-import chardet
+
+from memo_helpers.validation_memo import applescript_escape
 
 
 def export_memo(path: str, notes_folder: str | None = None):
+
     if notes_folder:
+        escaped_notes_folder = applescript_escape(notes_folder)
+
         folder_filter = f"""
         set targetFolder to missing value
         repeat with f in folders of default account
-            if name of f is "{notes_folder}" then
+            if name of f is "{escaped_notes_folder}" then
                 set targetFolder to f
                 exit repeat
             end if
         end repeat
         if targetFolder is missing value then
-            error "Folder '{notes_folder}' not found"
+            error "Folder '{escaped_notes_folder}' not found"
         end if
         set notesToExport to notes of targetFolder
         """
     else:
         folder_filter = "set notesToExport to notes of default account\n"
 
+    escaped_path = applescript_escape(path)
+
     script = f"""
-    set exportFolder to "{path}"
+    set exportFolder to "{escaped_path}"
     do shell script "mkdir -p " & quoted form of exportFolder
 
     on replaceText(find, replace, subject)
@@ -65,6 +73,7 @@ def export_memo(path: str, notes_folder: str | None = None):
         end repeat
     end tell
     """
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode == 0:
         click.secho(f"\nNotes exported to {path}", fg="green")
