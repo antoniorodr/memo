@@ -99,7 +99,7 @@ def test_notes_flist(mock_get_note, mock_notes_folders):
     runner = CliRunner()
     result = runner.invoke(cli, ["notes", "--flist"])
     assert result.exit_code == 0
-    assert "Folders and subfolders in Notes:" in result.output
+    assert "Notes folder structure" in result.output
 
 
 @patch("memo.memo.id_search_memo")

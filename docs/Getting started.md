@@ -21,7 +21,7 @@ Options:
   -fl, --flist       List all the folders and subfolders.
   -s, --search       Fuzzy search your notes.
   -r, --remove       Remove the folder you specified.
-  -ex, --export      Export your notes to the Desktop.
+  -ex, --export      Export your notes to the Desktop. You can specify a notes folder to export using the --folder flag
   -v, --view INTEGER Display the content of note N from the list.
   --help             Show this message and exit.
 ```

@@ -177,3 +177,5 @@ pyrightconfig.json
 
 # Private test fixtures (contain real call recording data)
 tests/fixtures/*.bin
+# script
+update_dependencies.py

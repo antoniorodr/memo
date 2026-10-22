@@ -1,9 +1,12 @@
-import subprocess
-import click
-import tempfile
-import mistune
 import os
+import subprocess
+import tempfile
 from datetime import datetime
+
+import click
+import mistune
+
+from memo_helpers.validation_memo import applescript_escape
 
 
 def add_note(folder_name):
@@ -24,11 +27,14 @@ def add_note(folder_name):
 
     note_html = mistune.markdown(note_md)
 
+    escaped_folder_name = applescript_escape(folder_name)
+    escaped_note_html = applescript_escape(note_html)
+
     script = f"""
         tell application "Notes"
-            set targetFolder to first folder whose name is "{folder_name}"
+            set targetFolder to first folder whose name is "{escaped_folder_name}"
             tell targetFolder
-                make new note with properties {{body:"{note_html}"}}
+                make new note with properties {{body:"{escaped_note_html}"}}
             end tell
         end tell
         """
@@ -58,6 +64,8 @@ def add_reminder():
     hour = due_dt.hour
     minute = due_dt.minute
 
+    escaped_title = applescript_escape(title)
+
     script = f'''
     tell application "Reminders"
         set theDate to current date
@@ -65,9 +73,10 @@ def add_reminder():
         set month of theDate to {month}
         set day of theDate to {day}
         set time of theDate to ({hour} * hours + {minute} * minutes)
-        make new reminder with properties {{name:"{title}", due date:theDate}}
+        make new reminder with properties {{name:"{escaped_title}", due date:theDate}}
     end tell
     '''
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
 
     if result.returncode == 0:

@@ -2,194 +2,273 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.5.2] - 24.03.2026
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.6.2] - 21.10.2026
+
+### Changed
+- Bump version to 0.6.2
+- Reorder imports
+- Merge pull request #54 from antoniorodr/dependabot/uv/mistune-3.3.3 by @antoniorodr in [#54](https://github.com/antoniorodr/memo/pull/54)
+- Bump mistune from 3.3.0 to 3.3.3 by @dependabot[bot]
+- Merge pull request #53 from antoniorodr/dependabot/uv/pymdown-extensions-11.0.1 by @antoniorodr in [#53](https://github.com/antoniorodr/memo/pull/53)
+- Bump pymdown-extensions from 11.0 to 11.0.1 by @dependabot[bot]
+- Merge pull request #51 from antoniorodr/dependabot/uv/pymdown-extensions-11.0 by @antoniorodr in [#51](https://github.com/antoniorodr/memo/pull/51)
+- Bump pymdown-extensions from 10.21.3 to 11.0 by @dependabot[bot]
+- Update changelog by @antoniorodr
 
 ### Fixed
+- Fix escaping problems
 
-- Fixed the `RecursionError` bug when iterating over all the notes. Thanks to @MehrabMirzaei for the fix!
+## [0.6.1] - 24.07.2026
+
+### Changed
+- Bump version to 0.6.1 by @antoniorodr
+- Change the folder structure "title" by @antoniorodr
+- Improve error handling by @antoniorodr
+- Merge pull request #50 from antoniorodr/dependabot/uv/mistune-3.3.0 by @antoniorodr in [#50](https://github.com/antoniorodr/memo/pull/50)
+- Bump mistune from 3.2.1 to 3.3.0 by @dependabot[bot]
+- Merge pull request #46 from antoniorodr/dependabot/uv/pymdown-extensions-10.21.3 by @antoniorodr in [#46](https://github.com/antoniorodr/memo/pull/46)
+- Bump pymdown-extensions from 10.21.2 to 10.21.3 by @dependabot[bot]
+- Update changelog by @antoniorodr
+
+### Fixed
+- Fix assert string by @antoniorodr
+
+## [0.6.0] - 24.05.2026
+
+### Added
+- Add explanation to use the `--folder` flag with `--export` by @antoniorodr
+- Add posibility to export notes from a folder using `--folder` flag by @antoniorodr
+- Add possibility to fetch notes from a especified folder by @antoniorodr
+
+### Changed
+- Update version by @antoniorodr
+- Merge pull request #43 from antoniorodr/dependabot/uv/mistune-3.2.1 by @antoniorodr in [#43](https://github.com/antoniorodr/memo/pull/43)
+- Bump mistune from 3.2.0 to 3.2.1 by @dependabot[bot]
+- Merge pull request #42 from antoniorodr/dependabot/uv/urllib3-2.7.0 by @antoniorodr in [#42](https://github.com/antoniorodr/memo/pull/42)
+- Bump urllib3 from 2.6.3 to 2.7.0 by @dependabot[bot]
+- Update feil mirror workflow by @antoniorodr
+- Update docs and mirror workflows by @antoniorodr
+- Update tests workflow by @antoniorodr
+- Update cliff config by @antoniorodr
+- Update release and tests workflows by @antoniorodr
+- Update changelog using git-cliff by @antoniorodr
+
+## [0.5.3] - 19.04.2026
+
+### Added
+- Add stale workflow by @antoniorodr
+
+### Changed
+- Merge branch 'chore/update-dependencies' by @antoniorodr
+- Update dependencies to the last version by @antoniorodr
+- Create git-cliff config by @antoniorodr
+- Update release workflow to use git-cliff by @antoniorodr
+- Delete logo from readme by @antoniorodr
+- Delete back to top from readme by @antoniorodr
+- Update logo size by @antoniorodr
+- Update logo size by @antoniorodr
+- Update readme by @antoniorodr
+- Update license in pyproject by @antoniorodr
+- Update tests workflow by @antoniorodr
+- Update readme by @antoniorodr
+- Update license by @antoniorodr
+- Update workflows by @antoniorodr
+- Update release workflow by @antoniorodr
+- Merge pull request #37 from antoniorodr/dependabot/uv/pygments-2.20.0 by @antoniorodr in [#37](https://github.com/antoniorodr/memo/pull/37)
+- Bump pygments from 2.19.2 to 2.20.0 by @dependabot[bot]
+
+### Removed
+- Delete white spaces by @antoniorodr
+
+### New Contributors
+* @dependabot[bot] made their first contribution
+
+## [0.5.2] - 24.03.2026
+
+### Added
+- Add cycle detection to _render_tree to prevent RecursionError by @MehrabMirzaei
+- Add the necessary files and modifications to run the no-autopilot action by @antoniorodr
+
+### Changed
+- Release v0.5.2 version by @antoniorodr
+- Merge branch 'fix/render-tree-cycle-detection' by @antoniorodr in [#32](https://github.com/antoniorodr/memo/pull/32)
+- Delete notify job from PR workflow by @antoniorodr
+- Delete old ci workflow by @antoniorodr
+- Update logo by @antoniorodr
+- Update pyproject with dev group by @antoniorodr
+
+### New Contributors
+* @MehrabMirzaei made their first contribution
 
 ## [0.5.1] - 07.03.2026
 
 ### Added
-
-- Added note list caching (`~/.cache/memo/notes_cache.json`, TTL 5 min) to avoid redundant AppleScript calls on repeated commands.
-- Added `--no-cache` / `-nc` flag to `memo notes` to force a fresh fetch from Notes.
-
-This two features combines fixes #18 and #25.
+- Add use of clear_cache and new flag by @antoniorodr
+- Add new workflows for testing and release by @antoniorodr
 
 ### Changed
-
-- Optimized the AppleScript in `get_note` to use batch property fetching (`id of every note` and `name of every note`) and list-based output instead of string concatenation, reducing fetch time from O(n²) to O(n) for large note collections.
-- Cache is automatically invalidated after `--add`, `--edit`, `--delete`, and `--move` operations.
-- Migration from Material Mkdocs to zensical.
-
-### Modify
-
-- Modify the test to use mocking.
+- Update changelog by @antoniorodr
+- Update changelog and pyproject by @antoniorodr
+- Move the test from test/ to tests/ by @antoniorodr
+- Modify get_note to use the caching by @antoniorodr
+- Create cache_memo for caching of notes by @antoniorodr
+- Change from mkdocs material to zensical by @antoniorodr
 
 ## [0.5.0] - 02.03.2026
 
 ### Added
+- Add a warning before selecting the note to edit by @antoniorodr
+- Add avoiding check host to mirroring workflow by @antoniorodr
+- Add debug mode to the mirroring workflow by @antoniorodr
+- Add Codeberg mirroring yml by @antoniorodr
 
-- Preserve inline images when editing notes. Merge #24 which fixes #3. Thanks to @Starefossen for the contribution!
-- Update the readme with a warning about the AppleScript limitations when editing notes with images.
+### Changed
+- Update changelog and pyproject for the new version by @antoniorodr
+- Merge branch 'feat/preserve-images-on-edit' by @antoniorodr
+- Update readme with the AppleScript limitation warning about images by @antoniorodr
+- Fix formatting by @antoniorodr
+- Update mkdocs documentation by @antoniorodr
+- Preserve inline images when editing notes by @Starefossen in [#24](https://github.com/antoniorodr/memo/pull/24)
+- Undo LICENSE change. Back to MIT. by @antoniorodr
+- Update mirroring workflow by @antoniorodr
+- Delete debug mode from workflow by @antoniorodr
+- Update mirroring workflow to use SSH by @antoniorodr
+- Merge pull request #22 from antoniorodr/feat/mirroring by @antoniorodr in [#22](https://github.com/antoniorodr/memo/pull/22)
+- Update mirroring yml by @antoniorodr
+- Delete gitlab mirroring yml by @antoniorodr
+- Change LICENSE to Apache 2.0 non AI by @antoniorodr
+
+### New Contributors
+* @Starefossen made their first contribution in [#24](https://github.com/antoniorodr/memo/pull/24)
 
 ## [0.4.0] - 18.02.2026
 
 ### Added
+- Add --view/-v flag to read note content
+- Add .editorconfig file to the project by @antoniorodr
+- Add new info in CONTRIBUTING.md file by @antoniorodr
 
-- Added the `--view` (or `-v`) flag to print the content of a note in the terminal. Solves #20.
+### Changed
+- Merge pull request #21 from antoniorodr/feat/view-flag by @antoniorodr in [#21](https://github.com/antoniorodr/memo/pull/21)
+- Update changelog by @antoniorodr
+- Merge branch 'add-show-notes-content-feature' by @antoniorodr
+- Update Changelog and pyproject by @antoniorodr
+- Edit the edit test with mocking by @antoniorodr
+- Delete an extra character by @antoniorodr
+- Merge pull request #17 from antoniorodr/feat/update-readme by @antoniorodr in [#17](https://github.com/antoniorodr/memo/pull/17)
+- Update Readme with OpenClaw mention by @antoniorodr
+- Merge pull request #16 from antoniorodr/feat/editorconfig by @antoniorodr in [#16](https://github.com/antoniorodr/memo/pull/16)
 
-Thanks @david-2814 for the contribution!
+### New Contributors
+* @ made their first contribution
 
 ## [0.3.6] - 11.02.2026
 
-### Fixed
-
-- Fixed a bug where `memo` used a hardcoded title for the new notes. Now, it will use a placeholder which can be edited by the user. Fixes #14.
+### Changed
+- Merge pull request #15 from antoniorodr/fix/hardcoded-title by @antoniorodr in [#15](https://github.com/antoniorodr/memo/pull/15)
+- Fixed hardcoded note title when creating a new one by @antoniorodr
 
 ## [0.3.5] - 10.02.2026
 
-### Fixed
+### Changed
+- Merge pull request #13 from antoniorodr/release/v0.3.5 by @antoniorodr in [#13](https://github.com/antoniorodr/memo/pull/13)
+- Update changelog and pyproject for the new release by @antoniorodr
+- Merge pull request #10 from sajal2692/fix/folder-listing-applescript-context by @antoniorodr in [#10](https://github.com/antoniorodr/memo/pull/10)
+- Fix folder listing crash caused by AppleScript context loss by @sajal2692
+- Merge pull request #12 from antoniorodr/export-to-custom-flag by @antoniorodr in [#12](https://github.com/antoniorodr/memo/pull/12)
 
-- Fixed a bug where `memo notes -fl` crashed when trying to list folders/subfolders that was deleted. Thanks @sajal2692 for the fix!
+### New Contributors
+* @sajal2692 made their first contribution
 
 ## [0.3.4] - 10.02.2026
 
 ### Changed
-
-- Add the possibility to choose the folder to export the notes to when using the `--export` flag. By default, the notes will be exported to the desktop.
+- Update pyproject and mkdocs by @antoniorodr
+- Update Changelog by @antoniorodr
+- Update the export flag to add the possibility to export the notes to a custom folder by @antoniorodr
 
 ## [0.3.3] - 22.01.2026
 
-### Fixed
-
-- Fixed a bug that caused memo to crash when trying to fuzzy search notes with special characters in the title. Solves #7.
+### Changed
+- Fix a bug that caosed memo to crash when searching notes by @antoniorodr
+- Update urllib3 dependency by @antoniorodr
+- Update changelog and pyproject by @antoniorodr
 
 ## [0.3.2] - 16.01.2026
 
-### Fixed
-
-- Fixed a bug that caused memo to crash when trying to fetch notes which contained "|". Solves #6.
-
-## [0.3.1] - 05.05.2025
-
 ### Added
-
-- Material for MkDocs support for the documentation.
-
-### Changed
-
-- Small changes and updates to the README file.
-
-## [0.3.0] - 23.04.2025
-
-### Added
-
-- Added support for exporting notes to the desktop and converting them to markdown format. Attachments and images will not be converted.
+- Add sponsorship badge and update readme by @antoniorodr
+- Add gitlab sync workflow by @antoniorodr
+- Add export to html and convert to md by @antoniorodr
+- Add translations for Recently Deleted by @antoniorodr
 
 ### Changed
-
-- Small changes and updates to the README file.
-
-## [0.2.3] - 15.04.2025
-
-### Changed
-
-- Added translations for the folder "Recently Deleted" to be able to filter it on all the languages MacOS supports.
-- Small changes and updates to the README file.
-
-### Fixed
-
-- Fixed a bug caused by images on Notes when using the `-edit`flag. The images will not appear in the markdown preview (Temporary fix).
+- Fix bug where memo crashed when the note title contained "|" by @antoniorodr
+- Update readme with gif by @antoniorodr
+- Release v0.3.1 by @antoniorodr
+- Update readme by @antoniorodr
 
 ## [0.2.2] - 14.04.2025
 
 ### Added
-
-- Added support for editing Apple Reminders title and due date.
-
-### Changed
-
-- Small changes and updates to the README file.
-- Refactored codebase and applied minor output improvements.
+- Add support to edit reminders by @antoniorodr
 
 ## [0.2.1] - 11.04.2025
 
 ### Added
-
-- Added support for delete Apple Notes folders with the `--remove` flag.
-
-### Changed
-
-- Small changes and updates to the README file.
-
-## [0.2.0] - 09.04.2025
-
-### Added
-
-- Added functionality to `--delete` for Apple Notes.
-- Added support to Apple Reminders. Now you can create, delete and mark reminders as completed.
-- Basic test coverage for Apple Reminders.
+- Add support to remove folders from Apple Notes by @antoniorodr
+- Add support to Apple Reminders by @antoniorodr
+- Add fuzzy search and refactoring by @antoniorodr
 
 ### Changed
-
-- Improved the output of some of the flags, with colors and better formatting.
-- Small changes and updates to the README file.
-- Refactored codebase and applied minor output improvements.
-
-## [0.1.2] - 08.04.2025
-
-### Added
-
-- Added the `--search` flag to enable fuzzy searching of your notes.
-
-### Changed
-
-- Refactored codebase and applied minor output improvements.
+- Update readme, add changelog, contributing and code of conduct by @antoniorodr
 
 ## [0.1.1] - 07.04.2025
 
 ### Added
-
-- Confirmation prompt when editing or moving notes that contain images or attachments.
-- Memo will notify you if the folder you are trying to filter does not exist when using `memo notes --folder <foldername>`.
-- Basic test coverage.
+- Add new tests by @antoniorodr
+- Add memo_notes_test and refactor memo.py by @antoniorodr
 
 ### Changed
-
-- Refactored codebase and applied minor output improvements.
+- Small fix and refactoring by @antoniorodr
+- Delete author from readme by @antoniorodr
+- Update issue templates by @antoniorodr
+- Update readme with warning for notes with images/att by @antoniorodr
+- Update readme with demo by @antoniorodr
 
 ## [0.1.0] - 06.04.2025
 
-Initial Release.
+### Changed
+- Update pyproject.toml by @antoniorodr
+- Update README by @antoniorodr
+- Refactoring by @antoniorodr
+- Update validation_memo function to make add need a folder by @antoniorodr
+- Update readme by @antoniorodr
+- Update readme and add new functions as flist by @antoniorodr
+- Small fix and add function to move the note from folder by @antoniorodr
+- Initial commit by @antoniorodr
 
-### Added
+### New Contributors
+* @antoniorodr made their first contribution
 
-Initial release with core Apple Notes functionality:
+[0.6.2]: https://github.com/antoniorodr/memo/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/antoniorodr/memo/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/antoniorodr/memo/compare/v0.5.3...v0.6.0
+[0.5.3]: https://github.com/antoniorodr/memo/compare/v0.5.2...v0.5.3
+[0.5.2]: https://github.com/antoniorodr/memo/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/antoniorodr/memo/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/antoniorodr/memo/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/antoniorodr/memo/compare/v0.3.6...v0.4.0
+[0.3.6]: https://github.com/antoniorodr/memo/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/antoniorodr/memo/compare/v0.3.4...v0.3.5
+[0.3.4]: https://github.com/antoniorodr/memo/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/antoniorodr/memo/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/antoniorodr/memo/compare/v0.2.2...v0.3.2
+[0.2.2]: https://github.com/antoniorodr/memo/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/antoniorodr/memo/compare/v0.1.1...v0.2.1
+[0.1.1]: https://github.com/antoniorodr/memo/compare/v0.1.0...v0.1.1
 
-- Create new notes in Apple Notes
-- Edit existing notes
-- Delete notes
-- View a list of all notes
-- Move notes between folders
-- List all folders and subfolders
-
-[0.5.2]: https://github.com/antoniorodr/memo/releases/tag/v0.5.1
-[0.5.1]: https://github.com/antoniorodr/memo/releases/tag/v0.5.1
-[0.5.0]: https://github.com/antoniorodr/memo/releases/tag/v0.5.0
-[0.4.0]: https://github.com/antoniorodr/memo/releases/tag/v0.4.0
-[0.3.6]: https://github.com/antoniorodr/memo/releases/tag/v0.3.6
-[0.3.5]: https://github.com/antoniorodr/memo/releases/tag/v0.3.5
-[0.3.4]: https://github.com/antoniorodr/memo/releases/tag/v0.3.4
-[0.3.3]: https://github.com/antoniorodr/memo/releases/tag/v0.3.3
-[0.3.2]: https://github.com/antoniorodr/memo/releases/tag/v0.3.2
-[0.3.1]: https://github.com/antoniorodr/memo/releases/tag/v0.3.1
-[0.3.0]: htpps://github.com/antoniorodr/memo/releases/tag/v0.3.0
-[0.2.3]: https://github.com/antoniorodr/memo/releases/tag/v0.2.3
-[0.2.2]: https://github.com/antoniorodr/memo/releases/tag/v0.2.2
-[0.2.1]: https://github.com/antoniorodr/memo/releases/tag/v0.2.1
-[0.2.0]: https://github.com/antoniorodr/memo/releases/tag/v0.2.0
-[0.1.2]: https://github.com/antoniorodr/memo/releases/tag/v0.1.2
-[0.1.1]: https://github.com/antoniorodr/memo/releases/tag/v0.1.1
-[0.1.0]: https://github.com/antoniorodr/memo/releases/tag/v0.1.0
+<!-- generated by git-cliff -->

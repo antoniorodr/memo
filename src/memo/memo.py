@@ -1,30 +1,31 @@
-import click
 import datetime
 import os
-from memo_helpers.get_memo import get_note, get_reminder
-from memo_helpers.edit_memo import edit_note, edit_reminder
+
+import click
+
 from memo_helpers.add_memo import add_note, add_reminder
-from memo_helpers.delete_memo import (
-    delete_note,
-    complete_reminder,
-    delete_reminder,
-    delete_note_folder,
-)
-from memo_helpers.move_memo import move_note
-from memo_helpers.choice_memo import pick_note, pick_reminder
-from memo_helpers.list_folder import notes_folders
-from memo_helpers.validation_memo import selection_notes_validation
-from memo_helpers.search_memo import fuzzy_notes
 from memo_helpers.cache_memo import clear_cache
-from memo_helpers.export_memo import export_memo
-from memo_helpers.id_search_memo import id_search_memo
-from memo_helpers.md_converter import md_converter
-from memo_helpers.get_recordings import get_recordings
-from memo_helpers.recording_utils import (
-    get_recording_transcript,
-    extract_recording_audio,
+from memo_helpers.choice_memo import pick_note, pick_reminder
+from memo_helpers.delete_memo import (
+    complete_reminder,
+    delete_note,
+    delete_note_folder,
+    delete_reminder,
 )
-from memo_helpers.search_memo import fuzzy_recordings
+from memo_helpers.edit_memo import edit_note, edit_reminder
+from memo_helpers.export_memo import export_memo
+from memo_helpers.get_memo import get_note, get_reminder
+from memo_helpers.get_recordings import get_recordings
+from memo_helpers.id_search_memo import id_search_memo
+from memo_helpers.list_folder import notes_folders
+from memo_helpers.md_converter import md_converter
+from memo_helpers.move_memo import move_note
+from memo_helpers.recording_utils import (
+    extract_recording_audio,
+    get_recording_transcript,
+)
+from memo_helpers.search_memo import fuzzy_notes, fuzzy_recordings
+from memo_helpers.validation_memo import selection_notes_validation
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -106,6 +107,25 @@ def notes(
     selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export, view
     )
+
+    def export_path(default_path: str):
+        path_choice = click.confirm(
+            "\nDo you want to export to the default path (Desktop/notes)?",
+            default=True,
+        )
+        if path_choice:
+            export_path = default_path
+            click.echo(f"\nExporting to: {export_path}")
+            return export_path
+        else:
+            export_path = click.prompt("\nEnter custom path", type=str)
+            if not os.path.exists(export_path):
+                click.secho(
+                    "\nThe specified path does not exist. Please create all the missing folders.",
+                    fg="red",
+                )
+                return export_path
+
     if no_cache:
         clear_cache()
     notes_info = get_note()
@@ -164,7 +184,7 @@ def notes(
         delete_note(note_id)
         clear_cache()
     if flist:
-        click.echo("\nFolders and subfolders in Notes:")
+        click.echo("\nNotes folder structure:")
         click.echo(f"\n{folders}")
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
@@ -181,25 +201,18 @@ def notes(
         )
         delete_note_folder(folder_to_delete)
     if export:
-        if click.confirm("\nAre you sure you want to export your notes to HTML?"):
-            default_path = os.path.expanduser("~/Desktop/notes/")
-            path_choice = click.confirm(
-                "\nDo you want to export to the default path (Desktop/notes)?",
-                default=True,
-            )
-            if path_choice:
-                export_path = default_path
-                click.echo(f"\nExporting to: {export_path}")
-            else:
-                export_path = click.prompt("\nEnter custom path", type=str)
-                if not os.path.exists(export_path):
-                    click.secho(
-                        "\nThe specified path does not exist. Please create all the missing folders.",
-                        fg="red",
-                    )
-                    return
+        confirmation_message = "\nAre you sure you want to export your notes to HTML?"
+        default_path = os.path.expanduser("~/Desktop/notes/")
+        if folder:
+            confirmation_message = f"\nAre you sure you want to export your notes in the folder '{folder}' to HTML?"
+            if click.confirm(confirmation_message):
+                export_path_str = export_path(default_path)
+                export_memo(export_path_str, folder)
+        else:
+            if click.confirm(confirmation_message):
+                export_path_str = export_path(default_path)
 
-            export_memo(export_path)
+                export_memo(export_path_str)
 
 
 @cli.command()

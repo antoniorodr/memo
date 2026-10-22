@@ -1,13 +1,16 @@
-import subprocess
-import click
-import tempfile
-import mistune
-import os
-import re
 import base64
 import datetime
+import os
+import re
+import subprocess
+import tempfile
+
+import click
+import mistune
+
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.md_converter import md_converter
+from memo_helpers.validation_memo import applescript_escape
 
 
 def _decode_image_to_tempfile(img_html):
@@ -25,18 +28,20 @@ def _decode_image_to_tempfile(img_html):
 
 def _reattach_images(note_id, surviving_images):
     """Delete orphaned attachments and re-add surviving images."""
+
+    escaped_note_id = applescript_escape(note_id)
+    script = f"""tell application "Notes"
+        set n to first note whose id is "{escaped_note_id}"
+        repeat while (count of attachments of n) > 0
+            delete first attachment of n
+        end repeat
+    end tell"""
+
     subprocess.run(
         [
             "osascript",
             "-e",
-            f"""
-        tell application "Notes"
-            set n to first note whose id is "{note_id}"
-            repeat while (count of attachments of n) > 0
-                delete first attachment of n
-            end repeat
-        end tell
-    """,
+            script,
         ],
         capture_output=True,
         text=True,
@@ -48,19 +53,23 @@ def _reattach_images(note_id, surviving_images):
         if not filepath:
             continue
         expected += 1
+
+        escaped_filepath = applescript_escape(filepath)
+
+        script = f"""tell application "Notes"
+            set n to first note whose id is "{escaped_note_id}"
+            make new attachment at end of attachments of n with data POSIX file
+            "{escaped_filepath}"
+            if (count of attachments of n) > {expected} then
+                delete last attachment of n
+            end if
+        end tell"""
+
         subprocess.run(
             [
                 "osascript",
                 "-e",
-                f"""
-            tell application "Notes"
-                set n to first note whose id is "{note_id}"
-                make new attachment at end of attachments of n with data POSIX file "{filepath}"
-                if (count of attachments of n) > {expected} then
-                    delete last attachment of n
-                end if
-            end tell
-        """,
+                script,
             ],
             capture_output=True,
             text=True,
@@ -108,12 +117,16 @@ def edit_note(note_id):
 
     edited_html = mistune.markdown(edited_md)
 
+    escaped_note_id = applescript_escape(note_id)
+    escaped_edited_html = applescript_escape(edited_html)
+
     update_script = f"""
         tell application "Notes"
-            set selectedNote to first note whose id is "{note_id}"
-            set body of selectedNote to "{edited_html}"
+            set selectedNote to first note whose id is "{escaped_note_id}"
+            set body of selectedNote to "{escaped_edited_html}"
         end tell
         """
+
     process = subprocess.run(
         ["osascript", "-e", update_script], capture_output=True, text=True
     )
@@ -134,14 +147,21 @@ def edit_note(note_id):
 
 
 def edit_reminder(reminder_id, part_to_edit):
+
+    escaped_reminder_id = applescript_escape(reminder_id)
+
     if part_to_edit == "title":
         new_title = click.prompt("\nEnter the new title")
+
+        escaped_new_title = applescript_escape(new_title)
+
         script = f"""
             tell application "Reminders"
-                set selectedReminder to first reminder whose id is "{reminder_id}"
-                set name of selectedReminder to "{new_title}"
+                set selectedReminder to first reminder whose id is "{escaped_reminder_id}"
+                set name of selectedReminder to "{escaped_new_title}"
             end tell
             """
+
         result = subprocess.run(
             ["osascript", "-e", script], capture_output=True, text=True
         )
@@ -162,7 +182,7 @@ def edit_reminder(reminder_id, part_to_edit):
 
         script = f"""
         tell application "Reminders"
-            set selectedReminder to first reminder whose id is "{reminder_id}"
+            set selectedReminder to first reminder whose id is "{escaped_reminder_id}"
             set dueDate to current date
             set year of dueDate to {year}
             set month of dueDate to {month}

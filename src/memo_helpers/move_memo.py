@@ -1,9 +1,14 @@
 import subprocess
+
 import click
+
+from memo_helpers.validation_memo import applescript_escape
 
 
 def move_note(note_id: str, target_folder: str):
 
+    escaped_note_id = applescript_escape(note_id)
+    escaped_target_folder = applescript_escape(target_folder)
     script = f'''
     tell application "Notes"
         set noteToMove to missing value
@@ -13,7 +18,7 @@ def move_note(note_id: str, target_folder: str):
         repeat with acc in accounts
             repeat with f in folders of acc
                 try
-                    set n to first note of f whose id is "{note_id}"
+                    set n to first note of f whose id is "{escaped_note_id}"
                     set noteToMove to n
                     set noteName to name of n
                     set noteBody to body of n
@@ -26,15 +31,17 @@ def move_note(note_id: str, target_folder: str):
         if noteToMove is not missing value then
             set destinationFolder to missing value
             try
-                set destinationFolder to folder "{target_folder}" of accToUse
+                set destinationFolder to folder "{escaped_target_folder}" of accToUse
             on error
-                set destinationFolder to make new folder with properties {{name:"{target_folder}"}} at accToUse
+                set destinationFolder to make new folder with properties
+                {{name:"{escaped_target_folder}"}} at accToUse
             end try
             make new note at destinationFolder with properties {{name:noteName, body:noteBody}}
             delete noteToMove
         end if
     end tell
     '''
+
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode == 0:
         click.secho(f'\n✅ The note was moved to "{target_folder}" folder.', fg="green")
