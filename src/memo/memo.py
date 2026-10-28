@@ -15,11 +15,16 @@ from memo_helpers.delete_memo import (
 from memo_helpers.edit_memo import edit_note, edit_reminder
 from memo_helpers.export_memo import export_memo
 from memo_helpers.get_memo import get_note, get_reminder
+from memo_helpers.get_recordings import get_recordings
 from memo_helpers.id_search_memo import id_search_memo
 from memo_helpers.list_folder import notes_folders
 from memo_helpers.md_converter import md_converter
 from memo_helpers.move_memo import move_note
-from memo_helpers.search_memo import fuzzy_notes
+from memo_helpers.recording_utils import (
+    extract_recording_audio,
+    get_recording_transcript,
+)
+from memo_helpers.search_memo import fuzzy_notes, fuzzy_recordings
 from memo_helpers.validation_memo import selection_notes_validation
 
 # TODO: Check if notes can be imported.
@@ -288,3 +293,86 @@ def rem(complete, add, delete, edit):
                 .lower()
             )
             edit_reminder(reminder_id, part_to_edit)
+
+
+@cli.command()
+@click.option(
+    "--view",
+    "-v",
+    type=int,
+    default=None,
+    help="View the transcript of recording N.",
+)
+@click.option(
+    "--extract",
+    "-x",
+    type=int,
+    default=None,
+    help="Extract audio file of recording N to disk.",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=str,
+    default=None,
+    help="Output path for --extract (default: ~/Desktop).",
+)
+@click.option(
+    "--search",
+    "-s",
+    is_flag=True,
+    help="Fuzzy search recording transcripts.",
+)
+def recordings(view, extract, output, search):
+    """Manage call recordings from Apple Notes."""
+    if search:
+        click.secho("\nFetching call recordings...\n", fg="yellow")
+        fuzzy_recordings()
+        return
+
+    click.secho("\nFetching call recordings...", fg="yellow")
+    recording_map, recordings_list = get_recordings()
+
+    if not recordings_list:
+        click.secho("\nNo call recordings found.", fg="yellow")
+        click.echo("Call recordings are saved by iOS 18.1+ in the 'Call Recordings' folder.")
+        return
+
+    if view is not None:
+        if view not in recording_map:
+            click.secho(f"\nRecording {view} not found.", fg="red")
+            return
+        note_id = recording_map[view][0]
+        transcript = get_recording_transcript(note_id)
+        if transcript is None:
+            click.secho(
+                f"\nTranscript for recording {view} is not accessible.",
+                fg="yellow",
+            )
+            click.echo(
+                "Apple stores transcripts in a private database that requires "
+                "Full Disk Access."
+            )
+            click.echo(
+                "Grant FDA to your terminal app in: System Settings → "
+                "Privacy & Security → Full Disk Access"
+            )
+            return
+        click.echo(f"\n{transcript[0]}")
+        return
+
+    if extract is not None:
+        if extract not in recording_map:
+            click.secho(f"\nRecording {extract} not found.", fg="red")
+            return
+        note_id = recording_map[extract][0]
+        output_path = output or os.path.expanduser("~/Desktop")
+        result_path = extract_recording_audio(note_id, output_path)
+        if result_path:
+            click.secho(f"\nAudio extracted to: {result_path}", fg="green")
+        return
+
+    # Default: list all recordings
+    click.echo("\nYour Call Recordings:\n")
+    for idx, title in enumerate(recordings_list, start=1):
+        click.echo(f"{idx}. {title}")
