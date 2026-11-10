@@ -132,3 +132,17 @@ def test_notes_view_combined_with_edit():
     result = runner.invoke(cli, ["notes", "--view", "1", "--edit"])
     assert result.exit_code == 2
     assert "Only one of" in result.output
+
+
+def test_notes_add_combined_with_edit():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--folder", "My Folder", "--add", "--edit"])
+    assert result.exit_code == 2
+    assert "Only one of" in result.output
+
+
+def test_notes_add_combined_with_delete():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["notes", "--folder", "My Folder", "--add", "--delete"])
+    assert result.exit_code == 2
+    assert "Only one of" in result.output
