@@ -32,9 +32,9 @@ def selection_notes_validation(
             "--flist must be used alone. It cannot be combined with other flags or --folder."
         )
 
-    modifier_flags = ["edit", "delete", "move", "remove", "search", "export", "view"]
+    modifier_flags = ["edit", "delete", "move", "remove", "search", "export", "view", "add"]
     used_modifiers = [f for f in modifier_flags if used_flags[f]]
     if len(used_modifiers) > 1:
         raise click.UsageError(
-            "Only one of --edit, --delete, --move, --remove, --export, --view, or --search can be used at a time."
+            "Only one of --edit, --delete, --move, --remove, --export, --view, --search, or --add can be used at a time."
         )
