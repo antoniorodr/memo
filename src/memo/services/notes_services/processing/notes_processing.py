@@ -161,3 +161,72 @@ class NotesProcessing:
                 text=True,
             )
             os.unlink(filepath)
+
+    @staticmethod
+    def edit_note(note_id):
+        result = NotesOperations.id_search_memo(note_id)
+        original_md, original_html, image_map = NotesProcessing.md_converter(result)
+
+        with tempfile.NamedTemporaryFile(suffix=".md", delete=False) as temp_file:
+            temp_file.write(original_md.encode("utf-8"))
+            temp_file_path = temp_file.name
+
+        if image_map:
+            click.secho(
+                f"\nℹ️ This note contains {len(image_map)} image(s), shown as [MEMO_IMG_N] placeholders.",
+                fg="cyan",
+            )
+            click.secho(
+                "Keep placeholders to preserve images, remove them to delete images.",
+                fg="cyan",
+            )
+
+        editor = os.getenv("EDITOR", "vim")
+        subprocess.run([editor, temp_file_path])
+
+        with open(temp_file_path, "r", encoding="utf-8") as file:
+            edited_md = file.read().strip()
+
+        if edited_md == original_md:
+            click.secho("\nNo changes made.", fg="yellow")
+            return
+
+        # Determine which images the user kept (placeholder still present)
+        surviving_images = {}
+        if image_map:
+            for key, img_html in image_map.items():
+                if key in edited_md:
+                    surviving_images[key] = img_html
+            # Remove placeholders before converting to HTML
+            for key in image_map:
+                edited_md = edited_md.replace(key, "")
+
+        edited_html = mistune.markdown(edited_md)
+
+        escaped_note_id = NotesProcessing.applescript_escape(note_id)
+        escaped_edited_html = NotesProcessing.applescript_escape(edited_html)
+
+        update_script = f"""
+            tell application "Notes"
+                set selectedNote to first note whose id is "{escaped_note_id}"
+                set body of selectedNote to "{escaped_edited_html}"
+            end tell
+            """
+
+        process = subprocess.run(
+            ["osascript", "-e", update_script], capture_output=True, text=True
+        )
+        if process.returncode != 0:
+            click.secho("\nError: Could not update note.\n", fg="red")
+            click.secho(process.stderr, fg="red")
+            return
+
+        # Re-add images as attachments (set body strips inline base64 images)
+        if surviving_images:
+            NotesProcessing._reattach_images(note_id, surviving_images)
+            click.secho(
+                f"\nNote updated. {len(surviving_images)} image(s) preserved.",
+                fg="green",
+            )
+        else:
+            click.secho("\nNote updated.", fg="green")
