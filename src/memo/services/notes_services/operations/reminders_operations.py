@@ -58,3 +58,44 @@ class RemindersOperations:
             return reminder_data[0]
         else:
             raise IndexError("The reminder you selected is not in the list.")
+
+    @staticmethod
+    def complete_reminder(reminder_id):
+
+        escaped_reminder_id = NotesProcessing.applescript_escape(reminder_id)
+        script = f'''
+            tell application "Reminders"
+                set selectedRem to first reminder whose id is "{escaped_reminder_id}"
+                set completed of selectedRem to true
+            end tell
+            '''
+
+        result = subprocess.run(
+            ["osascript", "-e", script], capture_output=True, text=True
+        )
+
+        if result.returncode == 0:
+            click.secho("\nReminder marked successfully as completed.", fg="green")
+        else:
+            click.secho(f"Error: {result.stderr}", fg="red")
+
+    @staticmethod
+    def delete_reminder(reminder_id):
+
+        escaped_reminder_id = NotesProcessing.applescript_escape(reminder_id)
+
+        script = f'''
+            tell application "Reminders"
+            set selectedRem to first reminder whose id is "{escaped_reminder_id}"
+            delete selectedRem
+        end tell
+        '''
+
+        result = subprocess.run(
+            ["osascript", "-e", script], capture_output=True, text=True
+        )
+
+        if result.returncode == 0:
+            click.secho("\nReminder deleted successfully.", fg="green")
+        else:
+            click.secho(f"Error: {result.stderr}", fg="red")

@@ -81,3 +81,45 @@ class NotesOperations:
                 )
                 return
             return note_data[0]
+
+    @staticmethod
+    def delete_note(note_id):
+
+        escaped_note_id = NotesProcessing.applescript_escape(note_id)
+
+        script = f'''
+        tell application "Notes"
+            set theNote to first note whose id is "{escaped_note_id}"
+            delete theNote
+        end tell
+        '''
+
+        result = subprocess.run(
+            ["osascript", "-e", script], capture_output=True, text=True
+        )
+
+        if result.returncode == 0:
+            click.secho("\nNote deleted successfully.", fg="green")
+        else:
+            click.secho(f"Error: {result.stderr}", fg="red")
+
+    @staticmethod
+    def delete_note_folder(folder_name):
+
+        escaped_folder_name = NotesProcessing.applescript_escape(folder_name)
+
+        script = f'''
+        tell application "Notes"
+            set selectedFolder to first folder whose name is "{escaped_folder_name}"
+            delete selectedFolder
+        end tell
+        '''
+
+        result = subprocess.run(
+            ["osascript", "-e", script], capture_output=True, text=True
+        )
+
+        if result.returncode == 0:
+            click.secho("\nFolder deleted successfully.", fg="green")
+        else:
+            click.secho(f"Error: {result.stderr}", fg="red")
