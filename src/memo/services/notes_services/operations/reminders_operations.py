@@ -147,3 +147,58 @@ class RemindersOperations:
 
         reminders_list = [f"{v[1]} | {v[2]}" for v in reminders_map.values()]
         return [reminders_map, reminders_list]
+
+    @staticmethod
+    def edit_reminder(reminder_id, part_to_edit):
+
+        escaped_reminder_id = NotesProcessing.applescript_escape(reminder_id)
+
+        if part_to_edit == "title":
+            new_title = click.prompt("\nEnter the new title")
+
+            escaped_new_title = NotesProcessing.applescript_escape(new_title)
+
+            script = f"""
+                tell application "Reminders"
+                    set selectedReminder to first reminder whose id is "{escaped_reminder_id}"
+                    set name of selectedReminder to "{escaped_new_title}"
+                end tell
+                """
+
+            result = subprocess.run(
+                ["osascript", "-e", script], capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                click.secho("\nReminder title updated.", fg="green")
+            else:
+                click.secho("\nError: Could not update reminder title.", fg="red")
+        if part_to_edit == "due date":
+            new_date = click.prompt("\nEnter the new date (YYYY-MM-DD)")
+            new_time = click.prompt("\nEnter the new time (HH:MM)")
+            datetime_str = f"{new_date} {new_time}"
+            due_dt = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+            year = due_dt.year
+            month = due_dt.month
+            day = due_dt.day
+            hour = due_dt.hour
+            minute = due_dt.minute
+
+            script = f"""
+            tell application "Reminders"
+                set selectedReminder to first reminder whose id is "{escaped_reminder_id}"
+                set dueDate to current date
+                set year of dueDate to {year}
+                set month of dueDate to {month}
+                set day of dueDate to {day}
+                set time of dueDate to ({hour} * hours + {minute} * minutes)
+                set due date of selectedReminder to dueDate
+            end tell
+            """
+
+            result = subprocess.run(
+                ["osascript", "-e", script], capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                click.secho("\nReminder date updated.", fg="green")
+            else:
+                click.secho("\nError: Could not update reminder date.", fg="red")
