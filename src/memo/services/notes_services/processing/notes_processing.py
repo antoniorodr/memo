@@ -1,7 +1,14 @@
+import base64
+import os
 import re
+import subprocess
+import tempfile
 
 import click
 import html2text
+import mistune
+
+from memo.services.notes_services.operations.notes_operations import NotesOperations
 
 
 class NotesProcessing:
