@@ -4,10 +4,12 @@ import re
 import subprocess
 import tempfile
 
+import chardet
 import click
 import html2text
 import mistune
 
+from memo.config import FOLDER_SEPARATOR
 from memo.services.notes_services.operations.notes_operations import NotesOperations
 
 
