@@ -237,3 +237,108 @@ class NotesProcessing:
             )
         else:
             click.secho("\nNote updated.", fg="green")
+
+    @staticmethod
+    def html_to_md(path: str):
+        files = os.listdir(path)
+        files_list = [f for f in files if os.path.isfile(os.path.join(path, f))]
+
+        for file in files_list:
+            file_path = os.path.join(path, file)
+            file_name = os.path.splitext(file)[0]
+
+            with open(file_path, "rb") as f:
+                raw_data = f.read()
+                result = chardet.detect(raw_data)
+                encoding = result["encoding"]
+
+            try:
+                if encoding:
+                    html_content = raw_data.decode(encoding)
+                else:
+                    html_content = raw_data.decode("utf-8", errors="replace")
+            except Exception as e:
+                click.secho(
+                    f"Could not decode {file} with detected encoding '{encoding}': {e}",
+                    fg="red",
+                )
+                return
+
+            text_maker = html2text.HTML2Text()
+            text_maker.images_to_alt = True
+            text_maker.body_width = 0
+            original_md = text_maker.handle(html_content).strip()
+            output_path = os.path.join(path, f"{file_name}.md")
+
+            with open(output_path, "w", encoding="utf-8") as md_file:
+                md_file.write(original_md)
+
+        click.secho("\nAll notes succesfully converted to Markdown", fg="green")
+
+    @staticmethod
+    def _build_tree(folders_with_parents):
+        """Build a folder tree from a flat list of (name, parent) tuples."""
+        children = {}
+        for name, parent in folders_with_parents:
+            children.setdefault(parent, []).append(name)
+        return children
+
+    @staticmethod
+    def _render_tree(children, parent="", indent=0, visited=None):
+        """Render the folder tree as indented text."""
+        if visited is None:
+            visited = set()
+        lines = []
+        for name in children.get(parent, []):
+            lines.append(" " * indent + name)
+            if name in children and name not in visited:
+                visited.add(name)
+                lines.extend(
+                    NotesProcessing._render_tree(children, name, indent + 2, visited)
+                )
+        return lines
+
+    @staticmethod
+    def notes_folders():
+        script = f"""
+        tell application "Notes"
+        set output to ""
+        repeat with f in every folder
+            set fName to name of f
+            try
+                set c to container of f
+                set cClass to class of c as text
+                if cClass is "folder" then
+                    set parentName to name of c
+                else
+                    set parentName to ""
+                end if
+            on error
+                set parentName to ""
+            end try
+            set output to output & fName & "{FOLDER_SEPARATOR}" & parentName & linefeed
+        end repeat
+        return output
+        end tell
+        """
+
+        try:
+            result = subprocess.run(
+                ["osascript", "-e", script], capture_output=True, text=True, check=True
+            )
+            raw = result.stdout.strip()
+            if not raw:
+                return ""
+
+            folders_with_parents = []
+            for line in raw.split("\n"):
+                if FOLDER_SEPARATOR in line:
+                    name, parent = line.split(FOLDER_SEPARATOR, 1)
+                    folders_with_parents.append((name.strip(), parent.strip()))
+
+            children = NotesProcessing._build_tree(folders_with_parents)
+            lines = NotesProcessing._render_tree(children)
+            return "\n".join(lines)
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Error running AppleScript: {e}")
+            return ""
