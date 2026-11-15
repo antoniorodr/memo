@@ -1,13 +1,14 @@
-from memo.services.notes_services.processing.notes_processing import NotesProcessing
 import datetime
 import os
 
 import click
+
+from memo.services.notes_services.cache.notes_cache_services import NotesCacheServices
 from memo.services.notes_services.operations.notes_operations import NotesOperations
 from memo.services.notes_services.operations.reminders_operations import (
     RemindersOperations,
 )
-from memo.services.notes_services.cache.notes_cache_services import NotesCacheServices
+from memo.services.notes_services.processing.notes_processing import NotesProcessing
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -86,7 +87,7 @@ def cli():
 def notes(
     folder, edit, add, delete, move, flist, search, remove, export, view, no_cache
 ):
-    selection_notes_validation(
+    NotesProcessing.selection_notes_validation(
         folder, edit, delete, move, add, flist, search, remove, export, view
     )
 
