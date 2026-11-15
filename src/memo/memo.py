@@ -1,26 +1,13 @@
+from memo.services.notes_services.processing.notes_processing import NotesProcessing
 import datetime
 import os
 
 import click
-
-from memo_helpers.add_memo import add_note, add_reminder
-from memo_helpers.cache_memo import clear_cache
-from memo_helpers.choice_memo import pick_note, pick_reminder
-from memo_helpers.delete_memo import (
-    complete_reminder,
-    delete_note,
-    delete_note_folder,
-    delete_reminder,
+from memo.services.notes_services.operations.notes_operations import NotesOperations
+from memo.services.notes_services.operations.reminders_operations import (
+    RemindersOperations,
 )
-from memo_helpers.edit_memo import edit_note, edit_reminder
-from memo_helpers.export_memo import export_memo
-from memo_helpers.get_memo import get_note, get_reminder
-from memo_helpers.id_search_memo import id_search_memo
-from memo_helpers.list_folder import notes_folders
-from memo_helpers.md_converter import md_converter
-from memo_helpers.move_memo import move_note
-from memo_helpers.search_memo import fuzzy_notes
-from memo_helpers.validation_memo import selection_notes_validation
+from memo.services.notes_services.cache.notes_cache_services import NotesCacheServices
 
 # TODO: Check if notes can be imported.
 # TODO: Check if its possible to fetch .localized names from the folders.
@@ -122,25 +109,25 @@ def notes(
                 return export_path
 
     if no_cache:
-        clear_cache()
-    notes_info = get_note()
+        NotesCacheServices.clear_cache()
+    notes_info = NotesOperations.get_note()
     note_map = notes_info[0]
     notes_list = notes_info[1]
     notes_list_filter = [
         note for note in enumerate(notes_list, start=1) if folder in note[1]
     ]
-    folders = notes_folders()
+    folders = NotesProcessing.notes_folders()
 
     if view is not None:
         if view not in note_map:
             click.secho(f"\nNote {view} not found.", fg="red")
             return
         note_id = note_map[view][0]
-        result = id_search_memo(note_id)
+        result = NotesOperations.id_search_memo(note_id)
         if result.returncode != 0:
             click.secho(f"\nFailed to fetch note {view}.", fg="red")
             return
-        markdown_content = md_converter(result)[0]
+        markdown_content = NotesProcessing.md_converter(result)[0]
         click.echo(f"\n{markdown_content}")
         return
 
@@ -158,32 +145,32 @@ def notes(
                 click.echo(f"{note[0]}. {note[1]}")
 
     if edit:
-        note_id = pick_note(note_map, notes_list_filter, "edit")
-        edit_note(note_id)
-        clear_cache()
+        note_id = NotesOperations.pick_note(note_map, notes_list_filter, "edit")
+        NotesProcessing.edit_note(note_id)
+        NotesCacheServices.clear_cache()
     if add:
-        add_note(folder)
-        clear_cache()
+        NotesOperations.add_note(folder)
+        NotesCacheServices.clear_cache()
     if move:
-        note_id = pick_note(note_map, notes_list_filter, "move")
+        note_id = NotesOperations.pick_note(note_map, notes_list_filter, "move")
         if note_id is None:
             click.echo("Invalid selection.")
             return
         target_folder = click.prompt(
             "\nEnter the folder you want to move the note to", type=str
         )
-        move_note(note_id, target_folder)
-        clear_cache()
+        NotesOperations.move_note(note_id, target_folder)
+        NotesCacheServices.clear_cache()
     if delete:
-        note_id = pick_note(note_map, notes_list_filter, "delete")
-        delete_note(note_id)
-        clear_cache()
+        note_id = NotesOperations.pick_note(note_map, notes_list_filter, "delete")
+        NotesOperations.delete_note(note_id)
+        NotesCacheServices.clear_cache()
     if flist:
         click.echo("\nNotes folder structure:")
         click.echo(f"\n{folders}")
     if search:
         click.secho("\nFetching notes...\n", fg="yellow")
-        fuzzy_notes()
+        NotesOperations.fuzzy_notes()
     if remove:
         click.echo(f"\n{folders}")
         click.secho(
@@ -194,7 +181,7 @@ def notes(
             "\nEnter the name of the folder to delete",
             type=str,
         )
-        delete_note_folder(folder_to_delete)
+        NotesOperations.delete_note_folder(folder_to_delete)
     if export:
         confirmation_message = "\nAre you sure you want to export your notes to HTML?"
         default_path = os.path.expanduser("~/Desktop/notes/")
@@ -202,12 +189,12 @@ def notes(
             confirmation_message = f"\nAre you sure you want to export your notes in the folder '{folder}' to HTML?"
             if click.confirm(confirmation_message):
                 export_path_str = export_path(default_path)
-                export_memo(export_path_str, folder)
+                NotesOperations.export_memo(export_path_str, folder)
         else:
             if click.confirm(confirmation_message):
                 export_path_str = export_path(default_path)
 
-                export_memo(export_path_str)
+                NotesOperations.export_memo(export_path_str)
 
 
 @cli.command()
@@ -237,11 +224,11 @@ def notes(
 )
 def rem(complete, add, delete, edit):
     if add:
-        add_reminder()
+        RemindersOperations.add_reminder()
     else:
         today = datetime.datetime.today()
         modified_today = today - datetime.timedelta(days=1)
-        reminders_info = get_reminder()
+        reminders_info = RemindersOperations.get_reminder()
         reminders_map = reminders_info[0]
         reminders_list = reminders_info[1]
         reminders_list_filter = [
@@ -273,18 +260,22 @@ def rem(complete, add, delete, edit):
                     f"{reminder[0]}. {reminder[1]} | Due on {dato_diff.days} days"
                 )
         if complete:
-            reminder_id = pick_reminder(
+            reminder_id = RemindersOperations.pick_reminder(
                 reminders_map, reminders_list_filter, "complete"
             )
-            complete_reminder(reminder_id)
+            RemindersOperations.complete_reminder(reminder_id)
         if delete:
-            reminder_id = pick_reminder(reminders_map, reminders_list_filter, "delete")
-            delete_reminder(reminder_id)
+            reminder_id = RemindersOperations.pick_reminder(
+                reminders_map, reminders_list_filter, "delete"
+            )
+            RemindersOperations.delete_reminder(reminder_id)
         if edit:
-            reminder_id = pick_reminder(reminders_map, reminders_list_filter, "edit")
+            reminder_id = RemindersOperations.pick_reminder(
+                reminders_map, reminders_list_filter, "edit"
+            )
             part_to_edit = (
                 click.prompt("\nEnter the part to edit ('title' or 'due date')")
                 .strip()
                 .lower()
             )
-            edit_reminder(reminder_id, part_to_edit)
+            RemindersOperations.edit_reminder(reminder_id, part_to_edit)
