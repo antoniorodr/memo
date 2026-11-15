@@ -147,7 +147,7 @@ def notes(
 
     if edit:
         note_id = NotesOperations.pick_note(note_map, notes_list_filter, "edit")
-        NotesProcessing.edit_note(note_id)
+        NotesOperations.edit_note(note_id)
         NotesCacheServices.clear_cache()
     if add:
         NotesOperations.add_note(folder)
