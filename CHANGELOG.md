@@ -5,11 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 16.11.2026
+
+### Added
+- Add tests for notes operations by @antoniorodr
+- Add `__init__.py` files to `cache` and `operations` directories by @antoniorodr
+
+### Changed
+- Bump version to v0.7.0 by @antoniorodr
+- Merge branch 'refactor/tests' by @antoniorodr
+- Move `edit_notes` from NotesProcessing by @antoniorodr
+- Mode `edit_note` to NotesOperations by @antoniorodr
+- Organize imports by @antoniorodr
+- Organize imports by @antoniorodr
+- Move helper functions to NotesProcessing by @antoniorodr
+- Move `export_note` function to NotesOperations by @antoniorodr
+- Move separator constant to `config.py` by @antoniorodr
+- Organize imports by @antoniorodr
+- Move `edit_note` to NotesProcessing by @antoniorodr
+- Move image decoding methods to NotesProcessing by @antoniorodr
+- Move `edit_reminder` to RemindersOperations by @antoniorodr
+- Change build system from setuptools to hatchet by @antoniorodr
+- Refactor(get notes): move all the get notes operations to by @antoniorodr
+- Move `get_remainders` to RemaindersOperations by @antoniorodr
+- Move move_note method to NotesOperations by @antoniorodr
+- Move functions from the delete file by @antoniorodr
+- Create NotesOperations class by @antoniorodr
+- Move pick_reminder to RemindersOperations by @antoniorodr
+- Create NotesCacheServices class by @antoniorodr
+- Create RemindersOperations class by @antoniorodr
+- Create config file by @antoniorodr
+- Move helper functions to NotesProcessing class by @antoniorodr
+- Merge pull request #56 from antoniorodr/dependabot/uv/urllib3-2.8.0 by @antoniorodr in [#56](https://github.com/antoniorodr/memo/pull/56)
+- Bump urllib3 from 2.7.0 to 2.8.0 by @dependabot[bot]
+- Update to v0.6.2 by @antoniorodr
+
+### Fixed
+- Create notes processing tests by @antoniorodr
+- Create cache services tests by @antoniorodr
+- Create `test_app` to test the app itself by @antoniorodr
+- Create `conftest.py` for test fixtures by @antoniorodr
+- Fix `edit_note` referance by @antoniorodr
+- Fix all imports and references by @antoniorodr
+
+### Removed
+- Delete failing test due linux not having Notes app by @antoniorodr
+- Delete old tests by @antoniorodr
+- Delete `memo_helpers` modules by @antoniorodr
+
 ## [0.6.2] - 21.10.2026
 
 ### Changed
-- Bump version to 0.6.2
-- Reorder imports
+- Bump version to 0.6.2 by @antoniorodr
+- Reorder imports by @antoniorodr
 - Merge pull request #54 from antoniorodr/dependabot/uv/mistune-3.3.3 by @antoniorodr in [#54](https://github.com/antoniorodr/memo/pull/54)
 - Bump mistune from 3.3.0 to 3.3.3 by @dependabot[bot]
 - Merge pull request #53 from antoniorodr/dependabot/uv/pymdown-extensions-11.0.1 by @antoniorodr in [#53](https://github.com/antoniorodr/memo/pull/53)
@@ -19,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog by @antoniorodr
 
 ### Fixed
-- Fix escaping problems
+- Fix escaping problems by @antoniorodr
 
 ## [0.6.1] - 24.07.2026
 
@@ -254,6 +302,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[0.7.0]: https://github.com/antoniorodr/memo/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/antoniorodr/memo/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/antoniorodr/memo/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/antoniorodr/memo/compare/v0.5.3...v0.6.0
