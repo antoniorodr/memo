@@ -154,8 +154,7 @@ class NotesOperations:
                 try
                     set destinationFolder to folder "{escaped_target_folder}" of accToUse
                 on error
-                    set destinationFolder to make new folder with properties
-                    {{name:"{escaped_target_folder}"}} at accToUse
+                    set destinationFolder to make new folder with properties {{name:"{escaped_target_folder}"}} at accToUse
                 end try
                 make new note at destinationFolder with properties {{name:noteName, body:noteBody}}
                 delete noteToMove
